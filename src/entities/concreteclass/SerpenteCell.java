@@ -86,6 +86,11 @@ public class SerpenteCell implements SpecialCell {
     public int getNumber(){
         return this.number;
     }
+
+    @Override
+    public int apply(Player p) {
+        return p.applyEffect(this);
+    }
 }
     
 

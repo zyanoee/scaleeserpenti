@@ -3,6 +3,7 @@ package entities.concreteclass;
 import java.awt.Color;
 
 import entities.interfaces.Cell;
+import entities.interfaces.Player;
 
 public class NormalCell implements Cell{
 
@@ -60,6 +61,11 @@ public class NormalCell implements Cell{
 
     public int getNumber(){
         return this.number;
+    }
+
+    @Override
+    public int apply(Player p) {
+       return p.applyEffect(this);
     }
 
 

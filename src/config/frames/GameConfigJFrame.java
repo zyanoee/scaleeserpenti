@@ -124,10 +124,25 @@ public class GameConfigJFrame extends JFrame {
         
 
         specialRulesField.setText("Attiva Regole Speciali");
+        specialRulesField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cardsRuleActionPerformed(evt);
+            }
+        });
 
         stopRule.setText("Caselle-STOP");
+        stopRule.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cardsRuleActionPerformed(evt);
+            }
+        });
 
         rerollRule.setText("Caselle-REROLL");
+        rerollRule.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                cardsRuleActionPerformed(evt);
+            }
+        });
 
         startGameButton.setText("START!");
         startGameButton.addActionListener(new java.awt.event.ActionListener() {

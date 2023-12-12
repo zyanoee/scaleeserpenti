@@ -3,7 +3,6 @@ package config.configview;
 import javax.swing.*;
 import java.awt.*;
 
-import entities.concreteclass.NormalCell;
 import entities.concreteclass.ScalaCell;
 import entities.concreteclass.SerpenteCell;
 import entities.interfaces.Cell;
@@ -19,6 +18,7 @@ public class GameBoardView extends JPanel {
     private Cell[][] grid;
     private List<Cell> snakes;
     private List<Cell> scale;
+    
 
     public GameBoardView(GameBoard model) {
         gridSizeX = model.getGridSizeX();
@@ -26,15 +26,27 @@ public class GameBoardView extends JPanel {
         grid = model.getGrid();
         snakes = new ArrayList<>();
         scale = new ArrayList<>();
+
+
+    }
+
+    public int getGridSizeX(){
+        return this.gridSizeX;
+    }
+
+    public int getGridSizeY(){
+        return this.gridSizeY;
     }
 
     @Override
     protected void paintComponent(Graphics g) {
+        
         super.paintComponent(g);
         paintChessboard(g);
         paintSnakes(g);
         paintScale(g);
         paintNumbers(g);
+
 
         
 
@@ -55,7 +67,7 @@ public class GameBoardView extends JPanel {
                     c = Color.WHITE;
                 }
                 Cell cell = grid[x][y];
-                if(!(cell instanceof NormalCell)){
+                if(cell.isSpecial()){
                     SpecialCell scell = (SpecialCell) cell;
                     switch (scell.getSpecialCellType()) {
                         case SERPENTE:
@@ -72,7 +84,7 @@ public class GameBoardView extends JPanel {
                     g.setColor(c);
                 }
                 
-                g.fillRect(x * cellWidth, y * cellHeight, cellWidth, cellHeight);
+                g.fillRect((x) * cellWidth, (gridSizeY - y- 1)  * cellHeight, cellWidth, cellHeight);
             }
         }
 
@@ -82,19 +94,22 @@ public class GameBoardView extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         int cellWidth = getWidth() / gridSizeX;
         int cellHeight = getHeight() / gridSizeY;
-        System.out.println("Chiamato paintSnakes con dimensione snakes: "+snakes.size());
         for(Cell s: snakes){
             SerpenteCell snake = (SerpenteCell) s;
             int x1 = snake.getPositionX();
             int y1 = snake.getPositionY();
             int x2 = snake.getLowerCell().getPositionX();
             int y2 = snake.getLowerCell().getPositionY();
-            System.out.println("Serpente: "+x1+" "+y1+" "+x2+" "+y2);
 
-            int centerX1 = (x1) * cellWidth + cellWidth / 2;
-            int centerY1 = (y1) * cellHeight + cellHeight / 2;
-            int centerX2 = (x2) * cellWidth + cellWidth / 2;
-            int centerY2 = (y2) * cellHeight + cellHeight / 2;
+            int rotatedx1 = x1;
+            int rotatedy1 = (gridSizeY - y1- 1);
+            int rotatedx2 = x2;
+            int rotatedy2 = (gridSizeY - y2- 1);
+
+            int centerX1 = (rotatedx1) * cellWidth + cellWidth / 2;
+            int centerY1 = (rotatedy1) * cellHeight + cellHeight / 2;
+            int centerX2 = (rotatedx2) * cellWidth + cellWidth / 2;
+            int centerY2 = (rotatedy2) * cellHeight + cellHeight / 2;
             g2d.setColor(new Color(Integer.decode("#db3d68")));
             g2d.setStroke(new BasicStroke(4.5f));
             g2d.drawLine(centerX1,centerY1,centerX2,centerY2);
@@ -105,16 +120,26 @@ public class GameBoardView extends JPanel {
         Graphics2D g2d = (Graphics2D) g;
         int cellWidth = getWidth() / gridSizeX;
         int cellHeight = getHeight() / gridSizeY;
-        System.out.println("Chiamato paintScale con dimensione snakes: "+scale.size());
         for(Cell s: scale){
             ScalaCell scala = (ScalaCell) s;
             int x1 = scala.getPositionX();
             int y1 = scala.getPositionY();
             int x2 = scala.getUpperCell().getPositionX();
             int y2 = scala.getUpperCell().getPositionY();
+
+            int rotatedx1 = x1;
+            int rotatedy1 = (gridSizeY - y1- 1);
+            int rotatedx2 = x2;
+            int rotatedy2 = (gridSizeY - y2- 1);
+
+            
+            int centerX1 = (rotatedx1) * cellWidth + cellWidth / 2;
+            int centerY1 = (rotatedy1) * cellHeight + cellHeight / 2;
+            int centerX2 = (rotatedx2) * cellWidth + cellWidth / 2;
+            int centerY2 = (rotatedy2) * cellHeight + cellHeight / 2;
             g2d.setColor(new Color(Integer.decode("#3d3ddb")));
             g2d.setStroke(new BasicStroke(4.5f));
-            g2d.drawLine((x1)*cellWidth+cellWidth/2, (y1)*cellHeight+cellHeight/2, (x2)*cellWidth+cellWidth/2, (y2)*cellHeight+cellHeight/2);
+            g2d.drawLine(centerX1,centerY1,centerX2,centerY2);
         }
     }
 
@@ -122,26 +147,35 @@ public class GameBoardView extends JPanel {
         int cellWidth = getWidth() / gridSizeX;
         int cellHeight = getHeight() / gridSizeY;
     
-        for (int j = 0; j < gridSizeY; j++) {
-            for (int i = 0; i < gridSizeX; i++) {
-                int number = grid[i][j].getNumber();
-                JLabel numero = new JLabel(Integer.toString(number));
-                numero.setHorizontalAlignment(JLabel.RIGHT);
-                numero.setVerticalAlignment(JLabel.BOTTOM);
+        Graphics2D g2d = (Graphics2D) g;
+        g2d.setColor(Color.BLACK);
+        g2d.setFont(new Font("Arial", Font.PLAIN, 14));
     
-                // Calcola la posizione per posizionare il numero nella parte inferiore destra della cella
-                int xPosition = i * cellWidth + cellWidth - numero.getPreferredSize().width;
-                int yPosition = (gridSizeY - j) * cellHeight + cellHeight;
+        for (int x = 0; x < gridSizeX; x++) {
+            for (int y = 0; y < gridSizeY; y++) {
+                int number = grid[x][y].getNumber(); // Aggiungi un metodo getNumber() alla classe Cell
+                String numberString = String.valueOf(number);
     
-                // Imposta la posizione del JLabel
-                numero.setBounds(xPosition, yPosition, numero.getPreferredSize().width, numero.getPreferredSize().height);
+                int rotatedX = x;
+                int rotatedY = (gridSizeY - y - 1);
     
-                this.add(numero);
-                numero.setVisible(true);
+                int centerX = (rotatedX) * cellWidth + cellWidth / 2;
+                int centerY = (rotatedY) * cellHeight + cellHeight / 2;
+    
+                FontMetrics fontMetrics = g2d.getFontMetrics();
+                int textWidth = fontMetrics.stringWidth(numberString);
+                int textHeight = fontMetrics.getAscent();
+
+                int offsetX = cellWidth / 3;
+                int offsetY = cellHeight / 3;
+    
+                g2d.drawString(numberString, centerX - textWidth / 2 + offsetX, centerY + textHeight / 2 + offsetY);
             }
         }
+
+        
     }
-    
+
 
 
    
