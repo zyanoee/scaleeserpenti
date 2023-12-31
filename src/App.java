@@ -10,12 +10,13 @@ public class App {
 
         MainframeJFrame frame = new MainframeJFrame();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 600); // Imposta le dimensioni del frame
+        frame.setSize(800, 700); // Imposta le dimensioni del frame
         frame.setVisible(true);
 
         GameConfig gameConfig = GameConfig.getInstance();
         GameSetupView gameSetupView = new GameSetupView();
         GameSetupController gameSetupController = new GameSetupController(gameSetupView, gameConfig, frame);
+        gameSetupController.startListener();
         gameSetupView.showSetupScreen();
 
         

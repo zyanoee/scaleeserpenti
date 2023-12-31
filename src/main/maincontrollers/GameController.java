@@ -2,81 +2,136 @@ package main.maincontrollers;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
-import config.configview.GameBoardView;
-import main.mainview.frames.MainframeJFrame;
-import main.mainview.frames.PawnsPanel;
+import javax.swing.SwingUtilities;
+
+
+
+import entities.interfaces.Callback;
+import entities.interfaces.Event;
+import main.mainview.GameView;
 import main.mainmodels.Game;
 
 
 public class GameController {
 
     private Game model;
-    private MainframeJFrame view;
-    private GameBoardView gbview;
-    private PawnsPanel ppanel;
+    private GameView gw;
 
     
 
-    public GameController(Game model, MainframeJFrame mainframe, GameBoardView gbview, PawnsPanel ppanel){
+    public GameController(Game model, GameView gw){
 
         this.model = model;
-        this.view = mainframe;
-        this.gbview = gbview;
-        this.ppanel = ppanel;
-        //view.showLanciaIDadi();
-        mainframe.getDiceButton().addActionListener(new DiceRollListener());
+        this.gw = gw;
+        if(model.isOneDiceEndEnabled()){
+            gw.getDiceEndCheckbox().setVisible(true);
+        }
+        gw.showLanciaIDadi(0);
+       
 
+    }
+
+    public void startListener(){
+         gw.getDiceButton().addActionListener(new DiceRollListener());
+         gw.getImageLabel().addMouseListener(new CardClickListener());
+         gw.getDiceEndCheckbox().addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e){
+                if( gw.getDiceEndCheckbox().isSelected()){
+                   model.handleOneDiceEnd(true);
+                } else {
+                   model.handleOneDiceEnd(false);
+                }
+            }
+         });
     }
 
     class DiceRollListener implements ActionListener{
 
         @Override
         public void actionPerformed(ActionEvent e) {
-            int[] dadi = model.lanciaDadi();
-            int sum = dadi[0]+dadi[1];
-            model.muovi(dadi);
-            //view.showDicesRolled(dadi); //TODO
-            System.out.println("[DEBUG-CONTROLLER] Somma dadi: "+sum+"");
-            ppanel.movePawn();
-            int eventValue = model.handleEvent();
-            controllerEvent(eventValue);
-            model.handleNextTurn();
-            //view.showLanciaIDadi()
-           
+            gw.getDiceButton().setEnabled(false);
+            gw.getDiceEndCheckbox().setEnabled(false);
+
+                
+                int[] dadi;
+                dadi = model.lanciaDadi();
+                int[] currentPlayerPos = new int[]{model.getPlayer().getPositionX(),model.getPlayer().getPositionY()};
+                int[] newPosition = model.muovi(dadi);
+
+
+                Callback callbackDices = () -> {
+                    Callback callbackMove = () -> {
+                        Event event = model.handleEvent();
+                        SwingUtilities.invokeLater(() -> {
+                            Callback callbackEvent = () -> {
+                                System.out.println("[DEBUG-CONTROLLER] Terminato Evento del tipo: "+event);
+                                SwingUtilities.invokeLater(() -> {
+                                    int turnPlayer = model.handleNextTurn();
+                                    gw.showLanciaIDadi(turnPlayer);
+                                    gw.getDiceButton().setEnabled(true);
+                                    
+                                     SwingUtilities.invokeLater(() -> {
+                                        gw.getDiceEndCheckbox().setSelected(false);
+                                        if(model.checkDistance()){
+                                            gw.getDiceEndCheckbox().setEnabled(true);
+                                            
+                                        }
+                                     });
+                                });
+                            };
+                            if(event!=null){
+                                System.out.println("[DEBUG-CONTROLLER] Chiamato evento del tipo: "+event);
+                                event.execute(model, gw, callbackEvent);
+                            }
+                            else{callbackEvent.onComplete();}
+                        });
+                         
+                        
+                       
+                    };
+                    gw.movePawn(currentPlayerPos, newPosition, callbackMove);
+                };
+                gw.showDicesRolled(dadi, callbackDices);
         }
 
-        public void controllerEvent(int i){
-            System.out.println("[DEBUG-CONTROLLER] Player "+model.getTurnPlayerCounter()+" genera Evento "+i);
-            try{
-            switch (i) {
-                case 1: //SCALE E SERPENTI
-                case 2:
-                    int[] newposition = model.handleScaleSerpenti();
-                    model.movePosition(newposition);
-                    Thread.sleep(1000);
-                    ppanel.movePawn();
+    }  
+
+    class CardClickListener extends MouseAdapter{
+
+        Callback callbackEndEvent;
+
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            handleImageClick();
+        }
+
+        public void handleImageClick(){
+
+            callbackEndEvent = gw.getEndCardEventCallback();
+
+            switch (gw.getCurrentCardState()) {
+                case SHOW_DECK:
+                    gw.showCard(model.getLastCard());
                     break;
-                case 3:
-                    //view.showStop() //TODO
+                case SHOW_CARD:
+                    Callback removeCardCallback = () -> {
+                        model.getLastCard().execute(model, gw, callbackEndEvent);
+                    };
+                    gw.removeCard(removeCardCallback);
+
                     break;
-                case 4:
-                    model.handleReroll();
-                    //view.showReroll();
-                    break;
-                case 5:
-                    //int cardid = model.handleCard()
-                    //view.showCard(cardid)
-                    //this.handleCardRule(cardid);
-                    break;
-                default:
+                case SET_NULL:
                     break;
             }
-        }catch (InterruptedException e ){
-            e.printStackTrace();
-        }
         }
 
     }
+
     
 }

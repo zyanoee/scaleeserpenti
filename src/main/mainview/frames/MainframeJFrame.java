@@ -10,6 +10,7 @@ public class MainframeJFrame extends javax.swing.JFrame {
     private javax.swing.JPanel gameZonePanel;
     private javax.swing.JLabel titleGameLabel;
     private javax.swing.JLabel turnNameLabel;
+    private javax.swing.JCheckBox oneDiceButton;
               
 
     public MainframeJFrame() {
@@ -26,6 +27,7 @@ public class MainframeJFrame extends javax.swing.JFrame {
         eventZonePanel = new javax.swing.JPanel();
         eventText = new javax.swing.JLabel();
         diceButton = new javax.swing.JButton();
+        oneDiceButton = new javax.swing.JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -82,6 +84,10 @@ public class MainframeJFrame extends javax.swing.JFrame {
             }
         });
 
+        oneDiceButton.setText("Usa un solo Dado!");
+        oneDiceButton.setEnabled(false);
+        oneDiceButton.setVisible(false);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -109,7 +115,10 @@ public class MainframeJFrame extends javax.swing.JFrame {
                         .addGap(78, 78, 78))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(diceButton)
-                        .addGap(52, 52, 52))))
+                        .addGap(52, 52, 52))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(oneDiceButton)
+                        .addGap(52,52,52))))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -123,6 +132,8 @@ public class MainframeJFrame extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGap(76, 76, 76)
                         .addComponent(diceButton)
+                        .addGap(20, 20, 20)
+                        .addComponent(oneDiceButton)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(turnNameLabel)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -138,7 +149,7 @@ public class MainframeJFrame extends javax.swing.JFrame {
     }// </editor-fold>                        
 
     private void diceButtonActionPerformed(java.awt.event.ActionEvent evt) {                                           
-        // TODO add your handling code here:
+    
     }                                          
 
     public javax.swing.JPanel getGameZonePanel(){
@@ -148,5 +159,16 @@ public class MainframeJFrame extends javax.swing.JFrame {
     public javax.swing.JButton getDiceButton(){
         return this.diceButton;
     }
+
+    public javax.swing.JPanel getDiceZonePanel(){
+        return this.diceZonePanel;
+    }
+
+    public javax.swing.JLabel getTurnNameLabel(){
+        return this.turnNameLabel;
+    }
     
+    public javax.swing.JCheckBox getOneDiceEndCheckBox(){
+        return this.oneDiceButton;
+    }
 }

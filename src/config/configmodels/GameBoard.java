@@ -4,22 +4,27 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
-import entities.concreteclass.CardCell;
-import entities.concreteclass.NormalCell;
-import entities.concreteclass.RerollCell;
-import entities.concreteclass.ScalaCell;
-import entities.concreteclass.SerpenteCell;
-import entities.concreteclass.StopCell;
-import entities.concreteclass.WinCell;
+import entities.concreteclass.concreteCells.CardCell;
+import entities.concreteclass.concreteCells.MollaCell;
+import entities.concreteclass.concreteCells.NormalCell;
+import entities.concreteclass.concreteCells.RerollCell;
+import entities.concreteclass.concreteCells.ScalaCell;
+import entities.concreteclass.concreteCells.SerpenteCell;
+import entities.concreteclass.concreteCells.StopCell;
+import entities.concreteclass.concreteCells.WinCell;
 import entities.interfaces.Cell;
 
 public class GameBoard {
     private Cell[][] grid;
     List<Cell> normalCells;
+    List<ScalaCell> scale;
+    List<SerpenteCell> serpenti;
     private Random scaleserpentiRNG;
     private Random normalcellRNG = new Random();
     private GameConfig config;
     private int numPlayers;
+    private int nScale;
+    private int nSerpenti;
 
 
 
@@ -28,16 +33,29 @@ public class GameBoard {
         config = model;
         grid = new Cell[model.getGridSizeX()][model.getGridSizeY()];
         normalCells = new ArrayList<>();
+        scale = new ArrayList<>();
+        serpenti = new ArrayList<>();
         scaleserpentiRNG = new Random();
         numPlayers = model.getNumberOfPlayers();
+        nScale = model.getNScale();
+        nSerpenti = model.getNSerpenti();
         initializeGrid();
     }
 
     private void initializeGrid() {
         generateNormalCell();
         generateWinCell();
+        setSuccessivi();
+    }
+
+    public void generateElements(){
         generateScalaCell();
         generateSerpenteCell();
+        generateSpecialCell();
+        setSuccessivi();
+    }
+
+    public void generateSpecialElements(){
         generateSpecialCell();
         setSuccessivi();
     }
@@ -50,16 +68,19 @@ public class GameBoard {
         return grid[x][y];
     }
 
-    public void generateNormalCell(){
+    private void generateNormalCell(){
         for(int i=0; i<grid.length;i++){
             for(int j=0; j<grid[0].length;j++){
                 grid[i][j] = new NormalCell(i,j);
+                if(i==0&&j==0){
+                    continue;
+                }
                 normalCells.add(grid[i][j]);
             }
         }
     }
 
-    public void generateWinCell(){
+    private void generateWinCell(){
         int gridSizeX = config.getGridSizeX();
         int gridSizeY = config.getGridSizeY();
         if((gridSizeY - 1)%2==0){
@@ -74,8 +95,7 @@ public class GameBoard {
 
     
 
-    public void generateScalaCell(){
-        int nScale = scaleserpentiRNG.nextInt((grid.length/2)-(grid.length/4)) + grid.length/4;
+    private void generateScalaCell(){
         for(int i = 0; i<nScale;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);
@@ -100,13 +120,14 @@ public class GameBoard {
             }
     
             grid[scalaCell.getPositionX()][scalaCell.getPositionY()]= scalaCell;
+            scale.add(scalaCell);
 
             
         }
     }
 
-    public void generateSerpenteCell(){
-       int nSerpenti = scaleserpentiRNG.nextInt((grid.length/2)-(grid.length/4)) + grid.length/4;
+
+    private void generateSerpenteCell(){
         for(int i = 0; i<nSerpenti;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);
@@ -131,19 +152,19 @@ public class GameBoard {
             }
 
             grid[scalaCell.getPositionX()][scalaCell.getPositionY()] = scalaCell;
-
-            
+            serpenti.add(scalaCell);     
         } 
     }
 
     public void generateSpecialCell(){
         if(config.isSpecialRulesEnabled()){
-            System.out.println(config.isCardRuleEnabled()+", "+config.isRerollEnabled()+", "+config.isStopRuleEnabled());
+            System.out.println(config.isCardRuleEnabled()+", "+config.isPrizeEnabled()+", "+config.isStopRuleEnabled());
             if(config.isCardRuleEnabled()){
                 generateCardCell();
             }
-            if(config.isRerollEnabled()){
+            if(config.isPrizeEnabled()){
                 generateRerollCell();
+                generateMollaCell();
             }
             if(config.isStopRuleEnabled()){
                 generateStopCell();
@@ -152,7 +173,8 @@ public class GameBoard {
     }
 
     private void generateCardCell(){
-        int nCardCell = scaleserpentiRNG.nextInt((grid.length/2)-(grid.length/4)) + grid.length/4;
+        //int nCardCell = scaleserpentiRNG.nextInt((grid.length/2)) + grid.length/3;
+        int nCardCell = grid.length;
         for(int i = 0; i<nCardCell;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);
@@ -166,7 +188,7 @@ public class GameBoard {
     }
 
     private void generateRerollCell(){
-        int nRerollCell = scaleserpentiRNG.nextInt((grid.length/2)-(grid.length/4)) + grid.length/4;
+        int nRerollCell = scaleserpentiRNG.nextInt((grid.length/2)) + grid.length/3;
         for(int i = 0; i<nRerollCell;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);
@@ -180,7 +202,7 @@ public class GameBoard {
     }
 
     private void generateStopCell(){
-        int nStopCell = scaleserpentiRNG.nextInt((grid.length/2)-(grid.length/4)) + grid.length/4;
+        int nStopCell = scaleserpentiRNG.nextInt((grid.length/2)) + grid.length/3;
         for(int i = 0; i<nStopCell;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);
@@ -189,6 +211,20 @@ public class GameBoard {
             stopCell = new StopCell(normalCell1.getPositionX(), normalCell1.getPositionY());
 
             grid[stopCell.getPositionX()][stopCell.getPositionY()] = stopCell;
+        } 
+
+    }
+
+    private void generateMollaCell(){
+        int nMollaCell = scaleserpentiRNG.nextInt((grid.length/2)) + grid.length/3;
+        for(int i = 0; i<nMollaCell;i++){
+            int randomIndex = normalcellRNG.nextInt(normalCells.size());
+            Cell normalCell1 = normalCells.get(randomIndex);
+            normalCells.remove(randomIndex);
+            MollaCell mollaCell;
+            mollaCell = new MollaCell(normalCell1.getPositionX(), normalCell1.getPositionY());
+
+            grid[mollaCell.getPositionX()][mollaCell.getPositionY()] = mollaCell;
         } 
 
     }
@@ -220,6 +256,67 @@ public class GameBoard {
         }
     }
 
+    public boolean addScalaSerpente(int x, int y, int x2, int y2, boolean isScala){
+        if(isScala){
+            return addScala(x,y,x2,y2);
+        } else {
+            return addSerpente(x,y,x2,y2);
+        }
+    }
+
+    public boolean selectScalaSerpente(int x, int y, boolean isScala){
+        if(isScala){
+            return selectScala(x,y);
+        } else {
+            return selectSerpente(x,y);
+        }
+    }
+
+    private boolean selectScala(int x, int y){
+        return isNormal(x, y) && y!=grid.length-1 && normalCells.contains(grid[x][y]);
+    }
+
+    private boolean selectSerpente(int x, int y){
+        return isNormal(x,y) && y!=0 && normalCells.contains(grid[x][y]);
+    }
+
+    private boolean addScala(int x, int y, int x2, int y2){
+        Cell cell = grid[x][y];
+        Cell cellCima = grid[x2][y2];
+        if((!cellCima.isSpecial()) && normalCells.contains(cellCima) && y<y2){
+            System.out.println("SCALA Y1 = "+y+" , Y2 = "+y2);
+            normalCells.remove(cellCima);
+            normalCells.remove(cell);
+            ScalaCell scalaCell = new ScalaCell(x,y);
+            scalaCell.setUpperCell(cellCima);
+            scale.add(scalaCell);
+            grid[x][y]= scalaCell;
+            return true;
+        }
+        return false;
+    }
+
+    private boolean addSerpente(int x, int y, int x2, int y2){
+        Cell cell = grid[x][y];
+        Cell cellCoda = grid[x2][y2];
+        if((!cellCoda.isSpecial()) && normalCells.contains(cellCoda) && y>y2){
+            System.out.println("SERPENTE Y1 = "+y+" , Y2 = "+y2);
+            normalCells.remove(cellCoda);
+            normalCells.remove(cell);
+            SerpenteCell serpenteCell = new SerpenteCell(x,y);
+            serpenteCell.setLowerCell(cellCoda);
+            serpenti.add(serpenteCell);
+            grid[x][y]=serpenteCell;
+            return true;
+        }
+        return false;
+
+    }
+
+    public boolean isNormal(int x, int y){
+        return !grid[x][y].isSpecial();
+    }
+
     
 
     public Cell[][] getGrid() {
@@ -244,5 +341,26 @@ public class GameBoard {
         .filter(cell -> cell.getNumber() == n)
         .findFirst()
         .orElse(null);
+    }
+
+    public int getNumberByPos(int x, int y){
+        Cell cell = grid[x][y];
+        return cell.getNumber();
+    }
+
+    public int getNScale(){
+        return nScale;
+    }
+
+    public int getNSerpenti(){
+        return nSerpenti;
+    }
+
+    public List<ScalaCell> getScale(){
+        return this.scale;
+    }
+
+    public List<SerpenteCell> getSerpenti(){
+        return this.serpenti;
     }
 }

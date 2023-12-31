@@ -3,7 +3,8 @@ package config.configview;
 
 import javax.swing.*;
 
-import config.frames.GameConfigJFrame;
+//import config.frames.GameConfigJFrame;
+import config.frames.GameConfigJFrame2;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -11,26 +12,36 @@ import java.awt.event.ItemListener;
 
 // Classe di View per l'interfaccia utente di configurazione
 public class GameSetupView {
-    private GameConfigJFrame frame;
+    private GameConfigJFrame2 frame;
     private JFormattedTextField numPlayersField;
     private JFormattedTextField gridSizeXField;
     private JFormattedTextField gridSizeYField;
     private JCheckBox specialRulesCheckbox;
     private JCheckBox cardsCheckbox;
     private JCheckBox stopSquaresCheckbox;  
-    private JCheckBox reRollSquaresCheckbox;
+    private JCheckBox prizeSquaresCheckbox;
+    private JCheckBox doubleSixCheckbox;
+    private JCheckBox cardsAddonCheckbox;
+    private JCheckBox oneDiceCheckbox;  
+    private JCheckBox oneDiceEndCheckbox;
+    private JCheckBox wantToEditCheckBox;
     private JButton startGameButton;
     
     public GameSetupView() {
-        frame = new GameConfigJFrame();
+        frame = new GameConfigJFrame2();
         numPlayersField = frame.getnPlayerField();
         gridSizeXField = frame.getGbLenghtField();
         gridSizeYField = frame.getGbHeightField();
         specialRulesCheckbox = frame.getSpecialRulesField();
         cardsCheckbox = frame.getCardsRule();
         stopSquaresCheckbox = frame.getStopRule();
-        reRollSquaresCheckbox = frame.getRerollRule();
+        prizeSquaresCheckbox = frame.getPrizeRule();
         startGameButton = frame.getStartGameButton();
+        doubleSixCheckbox = frame.getDoubleSixRule();
+        oneDiceCheckbox = frame.getOneDiceRule();
+        oneDiceEndCheckbox = frame.getOneDiceEndRule();
+        wantToEditCheckBox = frame.getWantToEditCheckbox();
+        cardsAddonCheckbox = frame.getCardsRuleAddon();
         
 
         specialRulesCheckbox.addItemListener(new ItemListener() {
@@ -39,11 +50,69 @@ public class GameSetupView {
                 if (specialRulesCheckbox.isSelected()) {
                     stopSquaresCheckbox.setEnabled(true);
                     cardsCheckbox.setEnabled(true);
-                    reRollSquaresCheckbox.setEnabled(true);
+                    prizeSquaresCheckbox.setEnabled(true);
+                    doubleSixCheckbox.setEnabled(true);
+                    oneDiceCheckbox.setEnabled(true);
+                    oneDiceEndCheckbox.setEnabled(true);
                 } else {
                     stopSquaresCheckbox.setEnabled(false);
                     cardsCheckbox.setEnabled(false);
-                    reRollSquaresCheckbox.setEnabled(false);
+                    prizeSquaresCheckbox.setEnabled(false);
+                    doubleSixCheckbox.setEnabled(false);
+                    oneDiceCheckbox.setEnabled(false);
+                    oneDiceEndCheckbox.setEnabled(false);
+                    cardsAddonCheckbox.setEnabled(false);
+                }
+            }
+        });
+
+        cardsCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e){
+                if(cardsCheckbox.isSelected()){
+                    cardsAddonCheckbox.setEnabled(true);
+                } else {
+                    cardsAddonCheckbox.setSelected(false);
+                    cardsAddonCheckbox.setEnabled(false);
+                }
+            }
+        });
+
+        oneDiceCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e){
+                if(oneDiceCheckbox.isSelected()){
+                    oneDiceEndCheckbox.setSelected(false);
+                    doubleSixCheckbox.setSelected(false);
+                    oneDiceEndCheckbox.setEnabled(false);
+                    doubleSixCheckbox.setEnabled(false);
+                } else {
+                    oneDiceEndCheckbox.setEnabled(true);
+                    doubleSixCheckbox.setEnabled(true);
+                }
+            }
+        });
+
+         oneDiceEndCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e){
+                if(oneDiceEndCheckbox.isSelected()){
+                    oneDiceCheckbox.setSelected(false);
+                    oneDiceCheckbox.setEnabled(false);
+                } else {
+                    oneDiceCheckbox.setEnabled(true);
+                }
+            }
+        });
+
+        doubleSixCheckbox.addItemListener(new ItemListener() {
+            @Override
+            public void itemStateChanged(ItemEvent e){
+                if(doubleSixCheckbox.isSelected()){
+                    oneDiceCheckbox.setSelected(false);
+                    oneDiceCheckbox.setEnabled(false);
+                } else {
+                    oneDiceCheckbox.setEnabled(true);
                 }
             }
         });
@@ -82,20 +151,58 @@ public class GameSetupView {
         return stopSquaresCheckbox.isSelected();
         } else return false;
     }
-    public boolean isRerollEnabled() {
-        if(reRollSquaresCheckbox.isEnabled()){
-        return reRollSquaresCheckbox.isSelected();
+    public boolean isPrizeEnabled() {
+        if(prizeSquaresCheckbox.isEnabled()){
+        return prizeSquaresCheckbox.isSelected();
+        } else return false;
+    }
+    public boolean isDoubleSixEnabled() {
+        if(doubleSixCheckbox.isEnabled()){
+        return doubleSixCheckbox.isSelected();
+        } else return false;
+    }
+    public boolean isOneDiceEnabled() {
+        if(oneDiceCheckbox.isEnabled()){
+        return oneDiceCheckbox.isSelected();
+        } else return false;
+    }
+    public boolean isOneDiceEndEnabled() {
+        if(oneDiceEndCheckbox.isEnabled()){
+        return oneDiceEndCheckbox.isSelected();
         } else return false;
     }
 
+    public boolean isCardsAddonEnabled(){
+        if(cardsAddonCheckbox.isEnabled()){
+            return cardsAddonCheckbox.isSelected();
+        }else return false;
+    }
+
     private boolean checkSpecials(){
-        return (!cardsCheckbox.isSelected())&&(!stopSquaresCheckbox.isSelected())&&(!reRollSquaresCheckbox.isSelected());
+        return (!cardsCheckbox.isSelected())&&(!stopSquaresCheckbox.isSelected())&&(!prizeSquaresCheckbox.isSelected())
+        &&(!doubleSixCheckbox.isSelected())&&(!oneDiceCheckbox.isSelected())&&(!oneDiceEndCheckbox.isSelected());
+    }
+
+    public boolean wantToEdit(){
+        return wantToEditCheckBox.isSelected();
     }
 
     public void showSetupScreen() {
         SwingUtilities.invokeLater(() -> {
             frame.setVisible(true);
         });
+    }
+
+    public void disposeFrame(){
+        frame.dispose();
+    }
+    
+    public int getNScale(){
+        return Integer.parseInt(frame.getnScaleField().getText());
+    }
+
+    public int getNSerpenti(){
+        return Integer.parseInt(frame.getnSerpentiField().getText());
     }
 
 }

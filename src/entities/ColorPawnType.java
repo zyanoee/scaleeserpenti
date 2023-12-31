@@ -3,6 +3,7 @@ package entities;
 import java.awt.Color;
 
 public enum ColorPawnType {
+    
     RED("#FF0000"),
     BLUE("#0000FF"),
     YELLOW("#FFFF00"),

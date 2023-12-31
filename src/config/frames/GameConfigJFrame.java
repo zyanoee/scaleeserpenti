@@ -18,6 +18,10 @@ public class GameConfigJFrame extends JFrame {
     private JCheckBox specialRulesField;
     private JButton startGameButton;
     private JCheckBox stopRule;
+    private JCheckBox mollaRule;
+    private JCheckBox oneDiceRule;
+    private JCheckBox oneDiceEndRule;
+    private JCheckBox wantToEditCheckBox;
   
     public GameConfigJFrame() {
         initComponents();
@@ -40,7 +44,11 @@ public class GameConfigJFrame extends JFrame {
          specialRulesField = new javax.swing.JCheckBox();
          stopRule = new javax.swing.JCheckBox();
          rerollRule = new javax.swing.JCheckBox();
+         mollaRule = new javax.swing.JCheckBox();
+         oneDiceEndRule = new javax.swing.JCheckBox();
+         oneDiceRule = new javax.swing.JCheckBox();
          startGameButton = new JButton();
+         wantToEditCheckBox = new JCheckBox();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -97,63 +105,71 @@ public class GameConfigJFrame extends JFrame {
 
         gameboardHeight.setText("Altezza board in Celle:");
         gbLenghtField.setColumns(4);
-        gbLenghtField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                gbLenghtFieldActionPerformed(evt);
+        gbLenghtField.setValue(10);
+        gbLenghtField.setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                try {
+                    int value = Integer.parseInt(gbLenghtField.getText());
+                    value = Math.min(Math.max(value, 5), 15);
+                    gbLenghtField.setValue(value);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
             }
         });
 
         gbHeightField.setColumns(4);
         gbHeightField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
+        gbHeightField.setValue(10); // Imposta il valore predefinito
+        gbHeightField.setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                try {
+                    int value = Integer.parseInt(gbHeightField.getText());
+                    // Imposta il valore minimo a 5 e il valore massimo a 15
+                    value = Math.min(Math.max(value, 5), 15);
+                    gbHeightField.setValue(value);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
+            }
+        });
 
         nPlayers.setText("Numero Giocatori: ");
         nPlayerField.setColumns(4);
-        nPlayerField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                nPlayerFieldActionPerformed(evt);
+        nPlayerField.setValue(2);
+        nPlayerField.setInputVerifier(new InputVerifier() {
+            @Override
+            public boolean verify(JComponent input) {
+                try {
+                    int value = Integer.parseInt(nPlayerField.getText());
+                    // Imposta il valore minimo a 1 e il valore massimo a 4
+                    value = Math.min(Math.max(value, 1), 4);
+                    nPlayerField.setValue(value);
+                    return true;
+                } catch (NumberFormatException e) {
+                    return false;
+                }
             }
         });
 
         cardsRule.setText("Cartefolli");
-        cardsRule.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cardsRuleActionPerformed(evt);
-            }
-        });
-
-        
-
         specialRulesField.setText("Attiva Regole Speciali");
-        specialRulesField.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cardsRuleActionPerformed(evt);
-            }
-        });
-
         stopRule.setText("Caselle-STOP");
-        stopRule.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cardsRuleActionPerformed(evt);
-            }
-        });
-
         rerollRule.setText("Caselle-REROLL");
-        rerollRule.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                cardsRuleActionPerformed(evt);
-            }
-        });
-
+        mollaRule.setText("Caselle-MOLLA");
+        oneDiceRule.setText("Dado Singolo");
+        oneDiceEndRule.setText("Dado Singolo al lancio finale");
         startGameButton.setText("START!");
-        startGameButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                startGameButtonActionPerformed(evt);
-            }
-        });
-
         cardsRule.setEnabled(false);
         stopRule.setEnabled(false);
         rerollRule.setEnabled(false);
+        mollaRule.setEnabled(false);
+        oneDiceRule.setEnabled(false);
+        oneDiceEndRule.setEnabled(false);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -181,10 +197,16 @@ public class GameConfigJFrame extends JFrame {
                             .addComponent(specialRulesField)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(cardsRule)
-                                .addGap(18, 18, 18)
+                                .addGap(54, 54, 54)
                                 .addComponent(stopRule)
+                                .addGap(14, 14, 14)
+                                .addComponent(rerollRule))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(mollaRule)
                                 .addGap(18, 18, 18)
-                                .addComponent(rerollRule)))
+                                .addComponent(oneDiceRule)
+                                .addGap(18, 18, 18)
+                                .addComponent(oneDiceEndRule)))
                         .addGap(0, 0, Short.MAX_VALUE))))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -218,36 +240,24 @@ public class GameConfigJFrame extends JFrame {
                     .addComponent(cardsRule)
                     .addComponent(stopRule)
                     .addComponent(rerollRule))
+                    
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addComponent(mollaRule)
+                    .addComponent(oneDiceRule)
+                    .addComponent(oneDiceEndRule))
+
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(startGameButton)
                 .addContainerGap(23, Short.MAX_VALUE))
-        );
+            );
 
         pack();
-    }// </editor-fold>                                        
-
-    private void gbLenghtFieldActionPerformed(java.awt.event.ActionEvent evt) {                                              
-        // TODO add your handling code here:
-    }                                             
-
-    private void nPlayerFieldActionPerformed(java.awt.event.ActionEvent evt) {                                             
-        // TODO add your handling code here:
-    }                                            
-
-    private void cardsRuleActionPerformed(java.awt.event.ActionEvent evt) {                                          
-        // TODO add your handling code here:
-    }
-    
-    private void startGameButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
-        // TODO add your handling code here:
     }
 
 
     public JCheckBox getCardsRule() {
         return cardsRule;
     }
-
-
     public JFormattedTextField getGbHeightField() {
         return gbHeightField;
     }
@@ -268,9 +278,26 @@ public class GameConfigJFrame extends JFrame {
     }
     public JCheckBox getStopRule() {
         return stopRule;
-    }                  
+    }
     
-    
+    public JCheckBox getMollaRule() {
+        return mollaRule;
+    }
+
+    public JCheckBox getOneDiceRule() {
+        return oneDiceRule;
+    }
+
+    public JCheckBox getOneDiceEndRule() {
+        return oneDiceEndRule;
+    }
+    public void disposeFrame(){
+        dispose();
+    }
+
+    public JCheckBox getWantToEditCheckBox(){
+        return wantToEditCheckBox;
+    }
     
 
 }

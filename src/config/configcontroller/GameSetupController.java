@@ -1,21 +1,18 @@
 package config.configcontroller;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-
-import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
-
 import config.configmodels.GameBoard;
 import config.configmodels.GameConfig;
-import config.configview.GameBoardView;
+import config.configview.EditBoardView;
 import config.configview.GameSetupView;
 import main.maincontrollers.GameController;
 import main.mainmodels.Game;
+import main.mainview.GameView;
 import main.mainview.frames.MainframeJFrame;
-import main.mainview.frames.PawnsPanel;
+
 
 public class GameSetupController {
     private GameSetupView view;
@@ -27,9 +24,11 @@ public class GameSetupController {
         this.model = model;
         this.mainframe = mainframe;
 
-        view.addStartGameButtonListener(new StartGameButtonListener());
-
         
+    }
+
+    public void startListener(){
+        view.addStartGameButtonListener(new StartGameButtonListener());
     }
 
     
@@ -40,10 +39,20 @@ public class GameSetupController {
             int numPlayers = view.getNumPlayers();
             int gridSizeX = view.getGridSizeX();
             int gridSizeY = view.getGridSizeY();
+            int nScale = view.getNScale();
+            int nSerpenti = view.getNSerpenti();
             boolean enableSpecialRules = view.isSpecialRulesEnabled();
             boolean enableStopSquares = view.isStopRuleEnabled();
-            boolean enableReRollSquares = view.isRerollEnabled();
+            boolean enablePrizeSquares = view.isPrizeEnabled();
             boolean enableCards = view.isCardsEnabled();
+            boolean enableDoubleSixRule = view.isDoubleSixEnabled();
+            boolean enableOneDice = view.isOneDiceEnabled();
+            boolean enableOneDiceEnd = view.isOneDiceEndEnabled();
+            boolean enableCardsAddon = view.isCardsAddonEnabled();
+            boolean wantToEdit = view.wantToEdit();
+            
+            
+
 
 
             // Aggiorna il model del Gamecfg
@@ -51,45 +60,56 @@ public class GameSetupController {
             model.setGridSize(gridSizeX, gridSizeY);
             model.setSpecialRules(enableSpecialRules);
             model.setBlockSquareRule(enableStopSquares);
-            model.setRerollSquareRule(enableReRollSquares);
+            model.setPrizeSquareRule(enablePrizeSquares);
             model.setCardsRule(enableCards);
+            model.setDoubleSixRule(enableDoubleSixRule);
+            model.setOneDiceRule(enableOneDice);
+            model.setOneDiceEndRule(enableOneDiceEnd);
+            model.setCardsRuleAddon(enableCardsAddon);
+            model.setEditing(wantToEdit);
+            model.setNScale(nScale);
+            model.setNSerpenti(nSerpenti);
             
             SwingUtilities.invokeLater(() -> {
-                initializeGameBoardView();
+                if(model.wantToEdit()){
+                    initializeEditBoardView();
+                }else{
+                    initializeGameBoardView();
+                }
+                
+                closeConfigFrame();
             });
 
 
 
         }
 
+        private void closeConfigFrame(){
+            view.disposeFrame();
+        }
+
         private void initializeGameBoardView() {
 
-            mainframe.getGameZonePanel().removeAll();
             GameBoard board = new GameBoard(model);
-            GameBoardView gbview = new GameBoardView(board);
-            gbview.setPreferredSize(new Dimension(500,500));
-
-            mainframe.getGameZonePanel().setLayout(new OverlayLayout(mainframe.getGameZonePanel()));
-    
+            board.generateElements();
             Game game = new Game(model, board);
-            PawnsPanel ppanel = new PawnsPanel(board, game);
-            ppanel.setPreferredSize(new Dimension(500,500));
-            mainframe.getGameZonePanel().add(ppanel);
-            mainframe.getGameZonePanel().revalidate();
-            mainframe.getGameZonePanel().repaint();
-            GameController gc = new GameController(game, mainframe, gbview, ppanel);
-            mainframe.getGameZonePanel().add(gbview);
-
-            gbview.validate();
-            gbview.repaint();
-            ppanel.validate();
-            ppanel.repaint();
-            mainframe.getGameZonePanel().revalidate();
-            mainframe.getGameZonePanel().repaint();
-            mainframe.revalidate();
-            mainframe.repaint();
+            GameView gw = new GameView(mainframe, board, model, game);
+            GameController gc = new GameController(game, gw);
+            gc.startListener();
 
             
         }
+
+        private void initializeEditBoardView(){
+            GameBoard editBoard = new GameBoard(model);
+            EditBoardView ebview = new EditBoardView(editBoard);
+            EditBoardController ebcontroller = new EditBoardController(ebview, editBoard, model, mainframe);
+            ebcontroller.startListener();
+            
+
+
+        }
     }
+
+   
 }

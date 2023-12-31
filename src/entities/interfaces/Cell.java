@@ -14,6 +14,7 @@ public interface Cell {
     void setSuccessivo(Cell c);
     void setNumber(int n);
     int getNumber();
-    int apply(Player p);
+    Event generateEvent();
+
     
 }

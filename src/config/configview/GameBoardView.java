@@ -3,8 +3,8 @@ package config.configview;
 import javax.swing.*;
 import java.awt.*;
 
-import entities.concreteclass.ScalaCell;
-import entities.concreteclass.SerpenteCell;
+import entities.concreteclass.concreteCells.ScalaCell;
+import entities.concreteclass.concreteCells.SerpenteCell;
 import entities.interfaces.Cell;
 import entities.interfaces.SpecialCell;
 import config.configmodels.GameBoard;
@@ -16,11 +16,13 @@ public class GameBoardView extends JPanel {
     private int gridSizeX;
     private int gridSizeY;
     private Cell[][] grid;
+    private GameBoard model;
     private List<Cell> snakes;
     private List<Cell> scale;
     
 
     public GameBoardView(GameBoard model) {
+        this.model = model;
         gridSizeX = model.getGridSizeX();
         gridSizeY = model.getGridSizeY();
         grid = model.getGrid();
@@ -40,7 +42,7 @@ public class GameBoardView extends JPanel {
 
     @Override
     protected void paintComponent(Graphics g) {
-        
+        grid = model.getGrid();
         super.paintComponent(g);
         paintChessboard(g);
         paintSnakes(g);
@@ -174,6 +176,11 @@ public class GameBoardView extends JPanel {
         }
 
         
+    }
+
+    public void showScalaSerpente(){
+        System.out.println("[DEBUG-GAMEBOARVIEW] Chiamato ShowScalaSerpente");
+        repaint();
     }
 
 
