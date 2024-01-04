@@ -16,6 +16,8 @@ public class GameSetupView {
     private JFormattedTextField numPlayersField;
     private JFormattedTextField gridSizeXField;
     private JFormattedTextField gridSizeYField;
+    private JFormattedTextField nScale;
+    private JFormattedTextField nSerpenti;
     private JCheckBox specialRulesCheckbox;
     private JCheckBox cardsCheckbox;
     private JCheckBox stopSquaresCheckbox;  
@@ -26,12 +28,15 @@ public class GameSetupView {
     private JCheckBox oneDiceEndCheckbox;
     private JCheckBox wantToEditCheckBox;
     private JButton startGameButton;
+    private JButton loadButton;
     
     public GameSetupView() {
         frame = new GameConfigJFrame2();
         numPlayersField = frame.getnPlayerField();
         gridSizeXField = frame.getGbLenghtField();
         gridSizeYField = frame.getGbHeightField();
+        nScale = frame.getnScaleField();
+        nSerpenti = frame.getnSerpentiField();
         specialRulesCheckbox = frame.getSpecialRulesField();
         cardsCheckbox = frame.getCardsRule();
         stopSquaresCheckbox = frame.getStopRule();
@@ -42,6 +47,7 @@ public class GameSetupView {
         oneDiceEndCheckbox = frame.getOneDiceEndRule();
         wantToEditCheckBox = frame.getWantToEditCheckbox();
         cardsAddonCheckbox = frame.getCardsRuleAddon();
+        loadButton = frame.getLoadOptionsButton();
         
 
         specialRulesCheckbox.addItemListener(new ItemListener() {
@@ -121,6 +127,10 @@ public class GameSetupView {
     
     public void addStartGameButtonListener(ActionListener listener) {
         startGameButton.addActionListener(listener);
+    }
+
+    public void addLoadButtonListener(ActionListener listener){
+        loadButton.addActionListener(listener);
     }
     
     public int getNumPlayers() {
@@ -203,6 +213,63 @@ public class GameSetupView {
 
     public int getNSerpenti(){
         return Integer.parseInt(frame.getnSerpentiField().getText());
+    }
+
+    public void setNumberOfPlayers(int n){
+        numPlayersField.setValue(n);
+    }
+
+    public void setGridSizeX(int n){
+        gridSizeXField.setValue(n);
+    }
+
+    public void setGridSizeY(int n){
+        gridSizeYField.setValue(n);
+    }
+
+    public void setNScale(int n){
+        nScale.setValue(n);
+    }
+
+    public void setNSerpenti(int n){
+        nSerpenti.setValue(n);
+    }
+
+    public void setSpecialRules(boolean b){
+        specialRulesCheckbox.setSelected(b);
+    }
+
+    public void setCardsRule(boolean b){
+        cardsCheckbox.setSelected(b);
+    }
+
+    public void setCardsRuleAddon(boolean b){
+        cardsAddonCheckbox.setSelected(b);
+    }
+
+    public void setBlockSquareRule(boolean b){
+        stopSquaresCheckbox.setSelected(b);
+    }
+
+    public void setPrizeSquareRule(boolean b){
+        prizeSquaresCheckbox.setSelected(b);
+    }
+
+    public void setDoubleSixRule(boolean b){
+        doubleSixCheckbox.setSelected(b);
+    }
+
+    public void setOneDiceRule(boolean b){
+        oneDiceCheckbox.setSelected(b);
+    }
+
+    public void setOneDiceEndRule(boolean b){
+        oneDiceEndCheckbox.setSelected(b);
+
+    }
+
+    public JFrame getFrame(){
+        return frame;
     }
 
 }

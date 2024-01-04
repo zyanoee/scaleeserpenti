@@ -11,14 +11,14 @@ public class Pawn implements Player {
     int posy;
     int id;
     Color color;
-    boolean blocked;
+    int blocked;
 
     public Pawn(int i){
         posx = 0;
         posy = 0;
         id = i;
         color = Color.decode(ColorPawnType.values()[id].getHexCode());
-        blocked = false;
+        blocked = 0;
     }
 
     @Override
@@ -42,13 +42,13 @@ public class Pawn implements Player {
     }
 
     @Override
-    public boolean isBlocked(){
+    public int isBlocked(){
         return this.blocked;
     }
 
     @Override
-    public void setBlocked(boolean bool){
-        this.blocked = bool;
+    public void setBlocked(int n){
+        this.blocked = n;
     }
 
     @Override

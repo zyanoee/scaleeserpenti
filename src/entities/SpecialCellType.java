@@ -7,5 +7,6 @@ public enum SpecialCellType {
     CARTA,
     REROLL,
     MOLLA,
+    LOCANDA,
     WIN
 }

@@ -14,12 +14,15 @@ public class RandomEventFactory {
 
 
     private List<EventFactory> factories;
+    private final int STOP_TURN=1;
+    private final int LOCANDA_TURN=3;
 
     public RandomEventFactory(){
         factories = new ArrayList<>();
         factories.add(new MollaEventFactory());
         factories.add(new RerollEventFactory());
         factories.add(new StopEventFactory());
+        factories.add(new LocandaEventFactory());
     }
 
     public Event createEvent(){
@@ -44,7 +47,13 @@ public class RandomEventFactory {
 
     class StopEventFactory implements EventFactory{
         public Event createEvent(){
-            return new StopEvent();
+            return new StopEvent(STOP_TURN);
+        }
+    }
+
+    class LocandaEventFactory implements EventFactory{
+        public Event createEvent(){
+            return new StopEvent(LOCANDA_TURN);
         }
     }
 }

@@ -112,6 +112,12 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
                     int value = Integer.parseInt(gbLenghtField.getText());
                     value = Math.min(Math.max(value, 5), 15);
                     gbLenghtField.setValue(value);
+                    int scaleValue = Integer.parseInt(nScaleField.getText());
+                    scaleValue= clampValue(scaleValue, Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbLenghtField.getText()));
+                    nScaleField.setValue(scaleValue);
+                    int serpenteValue = Integer.parseInt(nSerpentiField.getText());
+                    serpenteValue = clampValue(serpenteValue, Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbLenghtField.getText()));
+                    nSerpentiField.setValue(serpenteValue);
                     return true;
                 } catch (NumberFormatException e) {
                     return false;
@@ -131,6 +137,12 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
                     // Imposta il valore minimo a 5 e il valore massimo a 15
                     value = Math.min(Math.max(value, 5), 15);
                     gbHeightField.setValue(value);
+                    int scaleValue = Integer.parseInt(nScaleField.getText());
+                    scaleValue= clampValue(scaleValue, Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbLenghtField.getText()));
+                    nScaleField.setValue(scaleValue);
+                    int serpenteValue = Integer.parseInt(nSerpentiField.getText());
+                    serpenteValue = clampValue(serpenteValue, Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbLenghtField.getText()));
+                    nSerpentiField.setValue(serpenteValue);
                     return true;
                 } catch (NumberFormatException e) {
                     return false;
@@ -160,16 +172,16 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
 
         nSerpenti.setText("Numero Serpenti");
 
-        nScaleField.setText("10");
+        nScaleField.setText("5");
 
         nScaleField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-        nScaleField.setValue(10);
+        nScaleField.setValue(5);
         nScaleField.setInputVerifier(new InputVerifier() {
             @Override
             public boolean verify(JComponent input) {
                 try {
                     int value = Integer.parseInt(nScaleField.getText());
-                    value = Math.min(Math.max(value, Math.min(Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbHeightField.getText()))/2), Math.min(Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbHeightField.getText())));
+                    value = clampValue(value, Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbLenghtField.getText()));
                     nScaleField.setValue(value);
                     return true;
                 } catch (NumberFormatException e) {
@@ -179,15 +191,15 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
         });
 
 
-        nSerpentiField.setText("10");
+        nSerpentiField.setText("5");
         nSerpentiField.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.NumberFormatter()));
-        nSerpentiField.setValue(10);
+        nSerpentiField.setValue(5);
         nSerpentiField.setInputVerifier(new InputVerifier() {
             @Override
             public boolean verify(JComponent input) {
                 try {
                     int value = Integer.parseInt(nSerpentiField.getText());
-                    value = Math.min(Math.max(value, Math.min(Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbHeightField.getText()))/2), Math.min(Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbHeightField.getText())));
+                    value  = clampValue(value, Integer.parseInt(gbHeightField.getText()), Integer.parseInt(gbLenghtField.getText()));
                     nSerpentiField.setValue(value);
                     return true;
                 } catch (NumberFormatException e) {
@@ -428,4 +440,16 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
     public javax.swing.JCheckBox getWantToEditCheckbox() {
         return wantToEditCheckbox;
     }
+
+    private static int clampValue(int value, int val1, int val2) {
+        int minval = Math.max(val1, val2);
+        int lowerLimit = minval / 4;
+        int upperLimit = minval / 2;
+        return clamp(value, lowerLimit, upperLimit);
+    }
+
+    private static int clamp(int value, int min, int max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Random;
 
 import entities.concreteclass.concreteCells.CardCell;
+import entities.concreteclass.concreteCells.LocandaCell;
 import entities.concreteclass.concreteCells.MollaCell;
 import entities.concreteclass.concreteCells.NormalCell;
 import entities.concreteclass.concreteCells.RerollCell;
@@ -43,14 +44,19 @@ public class GameBoard {
     }
 
     private void initializeGrid() {
+        System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre NormalCell: "+normalCells.size());
         generateNormalCell();
+        System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Win: "+normalCells.size());
         generateWinCell();
         setSuccessivi();
     }
 
     public void generateElements(){
+        System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Scala: "+normalCells.size());
         generateScalaCell();
+        System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Serpente: "+normalCells.size());
         generateSerpenteCell();
+        System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Speciali: "+normalCells.size());
         generateSpecialCell();
         setSuccessivi();
     }
@@ -160,21 +166,26 @@ public class GameBoard {
         if(config.isSpecialRulesEnabled()){
             System.out.println(config.isCardRuleEnabled()+", "+config.isPrizeEnabled()+", "+config.isStopRuleEnabled());
             if(config.isCardRuleEnabled()){
+                System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Carte: "+normalCells.size());
                 generateCardCell();
             }
             if(config.isPrizeEnabled()){
+                System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Reroll: "+normalCells.size());
                 generateRerollCell();
+                System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Molla: "+normalCells.size());
                 generateMollaCell();
             }
             if(config.isStopRuleEnabled()){
+                System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Stop: "+normalCells.size());
                 generateStopCell();
+                System.out.println("[DEBUG-GAMEBOARD] Size delle normal cell pre Locanda: "+normalCells.size());
+                generateLocandaCell();
             }
         }
     }
 
     private void generateCardCell(){
-        //int nCardCell = scaleserpentiRNG.nextInt((grid.length/2)) + grid.length/3;
-        int nCardCell = grid.length;
+        int nCardCell = scaleserpentiRNG.nextInt((grid.length/3))+1;
         for(int i = 0; i<nCardCell;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);
@@ -188,7 +199,7 @@ public class GameBoard {
     }
 
     private void generateRerollCell(){
-        int nRerollCell = scaleserpentiRNG.nextInt((grid.length/2)) + grid.length/3;
+        int nRerollCell = scaleserpentiRNG.nextInt((grid.length/3))+1;
         for(int i = 0; i<nRerollCell;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);
@@ -202,7 +213,7 @@ public class GameBoard {
     }
 
     private void generateStopCell(){
-        int nStopCell = scaleserpentiRNG.nextInt((grid.length/2)) + grid.length/3;
+        int nStopCell = scaleserpentiRNG.nextInt((grid.length/3))+1;
         for(int i = 0; i<nStopCell;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);
@@ -212,11 +223,23 @@ public class GameBoard {
 
             grid[stopCell.getPositionX()][stopCell.getPositionY()] = stopCell;
         } 
+    }
 
+    private void generateLocandaCell(){
+        int nStopCell = scaleserpentiRNG.nextInt((grid.length/4))+1;
+        for(int i = 0; i<nStopCell;i++){
+            int randomIndex = normalcellRNG.nextInt(normalCells.size());
+            Cell normalCell1 = normalCells.get(randomIndex);
+            normalCells.remove(randomIndex);
+            LocandaCell stopCell;
+            stopCell = new LocandaCell(normalCell1.getPositionX(), normalCell1.getPositionY());
+
+            grid[stopCell.getPositionX()][stopCell.getPositionY()] = stopCell;
+        } 
     }
 
     private void generateMollaCell(){
-        int nMollaCell = scaleserpentiRNG.nextInt((grid.length/2)) + grid.length/3;
+        int nMollaCell = scaleserpentiRNG.nextInt((grid.length/3))+1;
         for(int i = 0; i<nMollaCell;i++){
             int randomIndex = normalcellRNG.nextInt(normalCells.size());
             Cell normalCell1 = normalCells.get(randomIndex);

@@ -10,7 +10,7 @@ public interface Player {
     Color getColor();
 
     void move(int x, int y);
-    boolean isBlocked();
-    void setBlocked(boolean bool);
+    int isBlocked();
+    void setBlocked(int n);
 }
     

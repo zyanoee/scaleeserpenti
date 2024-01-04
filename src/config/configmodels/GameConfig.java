@@ -1,5 +1,11 @@
 package config.configmodels;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Properties;
+
+
 // Design Pattern: Singleton Pattern
 public class GameConfig {
     private static GameConfig instance;
@@ -8,7 +14,6 @@ public class GameConfig {
     private int gridSizeY;
     private int nScale;
     private int nSerpenti;
-    private boolean wantToEdit;
     private boolean enableSpecialRules = false;
     private boolean enableCards = false;
     private boolean enableCardsAddon = false;
@@ -17,6 +22,8 @@ public class GameConfig {
     private boolean enableDoubleSixRule = false;
     private boolean enableOneDice = false;
     private boolean enableOneDiceEnd = false;
+    private boolean wantToEdit;
+
 
     private GameConfig() {
         // Inizializza le impostazioni predefinite del gioco
@@ -119,8 +126,6 @@ public class GameConfig {
     public void setCardsRuleAddon(boolean b){
         this.enableCardsAddon = b;
     }
-
-
     public boolean isSpecialRulesEnabled() {
         return enableSpecialRules;
     }
@@ -148,8 +153,39 @@ public class GameConfig {
     }
 
 
+    public void writeConfiguration(PrintWriter writer){
+        writer.println("numberOfPlayers="+numberOfPlayers);
+        writer.println("gridSizeX="+gridSizeX);
+        writer.println("gridSizeY="+gridSizeY);
+        writer.println("nScale="+nScale);
+        writer.println("nSerpenti="+nSerpenti);
+        writer.println("enableSpecialRules="+enableSpecialRules);
+        writer.println("enableCards="+enableCards);
+        writer.println("enableCardsAddon="+enableCardsAddon);
+        writer.println("enableStopSquares="+enableStopSquares);
+        writer.println("enablePrizeSquares="+enablePrizeSquares);
+        writer.println("enableDoubleSixRule="+enableDoubleSixRule);
+        writer.println("enableOneDice="+enableOneDice);
+        writer.println("enableOneDiceEnd="+enableOneDiceEnd);
+    }
 
+    public void readConfiguration(BufferedReader reader) throws IOException{
+        Properties prop = new Properties();
+        prop.load(reader);
+        this.numberOfPlayers = Integer.parseInt(prop.getProperty("numberOfPlayers"));
+        System.out.println("La Property NUMBER OF PLAYER vale = "+prop.getProperty("numberOfPlayers"));
+        this.gridSizeX = Integer.parseInt(prop.getProperty("gridSizeX"));
+        this.gridSizeY = Integer.parseInt(prop.getProperty("gridSizeY"));
+        this.nScale = Integer.parseInt(prop.getProperty("nScale"));
+        this.nSerpenti = Integer.parseInt(prop.getProperty("nSerpenti"));
+        this.enableSpecialRules = Boolean.parseBoolean(prop.getProperty("enableSpecialRules"));
+        this.enableCards = Boolean.parseBoolean(prop.getProperty("enableCards"));
+        this.enableCardsAddon = Boolean.parseBoolean(prop.getProperty("enableCardsAddon"));
+        this.enableStopSquares = Boolean.parseBoolean(prop.getProperty("enableStopSquares"));
+        this.enablePrizeSquares = Boolean.parseBoolean(prop.getProperty("enablePrizeSquares"));
+        this.enableDoubleSixRule = Boolean.parseBoolean(prop.getProperty("enableDoubleSixRule"));
+        this.enableOneDice = Boolean.parseBoolean(prop.getProperty("enableOneDice"));
+        this.enableOneDiceEnd = Boolean.parseBoolean(prop.getProperty("enableOneDiceEnd"));
+    }
 
-    
-    // Altre getter e setter per le impostazioni del gioco
 }

@@ -10,7 +10,10 @@ import main.mainview.GameView;
 public class StopEvent implements Event{
 
 
-    public StopEvent(){
+    private int turns;
+
+    public StopEvent(int turns){
+        this.turns = turns;
     }
     public void execute(Game g, GameView gw, Callback callback) {
         Callback stopCallback = () -> {
@@ -18,11 +21,15 @@ public class StopEvent implements Event{
         };
         SwingUtilities.invokeLater(() -> {
             System.out.println("[DEBUG-EVENTO] Execute di StopEvent Avviato");
-            g.getPlayer().setBlocked(true);
+            g.getPlayer().setBlocked(turns);
             int[] playerPos = new int[]{g.getPlayer().getPositionX(), g.getPlayer().getPositionY()};
             gw.movePawnInstant(playerPos, playerPos, stopCallback);
         });
         
+    }
+
+    public int getTurns(){
+        return turns;
     }
 
     public void accept(GameView gw){

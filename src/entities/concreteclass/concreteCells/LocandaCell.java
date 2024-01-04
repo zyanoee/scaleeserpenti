@@ -8,7 +8,7 @@ import entities.interfaces.Cell;
 import entities.interfaces.Event;
 import entities.interfaces.SpecialCell;
 
-public class StopCell implements SpecialCell {
+public class LocandaCell implements SpecialCell {
 
     private int number;
     private int positionX;
@@ -16,13 +16,14 @@ public class StopCell implements SpecialCell {
     private SpecialCellType type;
     private Color color;
     private Cell successivo;
-    private final int STOP_TURN=1;
+    private final int STOP_TURN=3;
 
-    public StopCell(int x, int y){
+    public LocandaCell(int x, int y){
         this.positionX = x;
         this.positionY = y;
-        this.type = SpecialCellType.BLOCCO;
-        this.color = Color.MAGENTA;
+        this.type = SpecialCellType.LOCANDA;
+        this.color = Color.PINK;
+        
     }
 
     @Override
@@ -48,7 +49,7 @@ public class StopCell implements SpecialCell {
 
     @Override
     public String getDescription() {
-        return "Stop! Fermo un turno";
+        return "Ti sei preso un momento di relax, forse anche due o tre. Fermo 3 turni";
     }
 
     public void setColor(Color c){

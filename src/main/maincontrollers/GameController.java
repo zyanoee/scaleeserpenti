@@ -9,8 +9,7 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
-
-
+import entities.concreteclass.concreteEvents.RerollEvent;
 import entities.interfaces.Callback;
 import entities.interfaces.Event;
 import main.mainview.GameView;
@@ -71,7 +70,8 @@ public class GameController {
                         SwingUtilities.invokeLater(() -> {
                             Callback callbackEvent = () -> {
                                 System.out.println("[DEBUG-CONTROLLER] Terminato Evento del tipo: "+event);
-                                SwingUtilities.invokeLater(() -> {
+                                Callback sixrollCallback = () -> {
+                                    SwingUtilities.invokeLater(() -> {
                                     int turnPlayer = model.handleNextTurn();
                                     gw.showLanciaIDadi(turnPlayer);
                                     gw.getDiceButton().setEnabled(true);
@@ -84,6 +84,13 @@ public class GameController {
                                         }
                                      });
                                 });
+                                };
+                                if(model.isDoubleSixEnabled() && dadi[0]==6 && dadi[1]==6){
+                                    RerollEvent rollEvent = new RerollEvent();
+                                    rollEvent.execute(model, gw, sixrollCallback);
+                                } else {
+                                    sixrollCallback.onComplete();
+                                }
                             };
                             if(event!=null){
                                 System.out.println("[DEBUG-CONTROLLER] Chiamato evento del tipo: "+event);

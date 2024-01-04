@@ -15,6 +15,7 @@ import entities.interfaces.Player;
 public class Game {
     private Random scaleserpentiRNG;
     private GameBoard gboard;
+    private boolean doubleSixRule;
     private boolean oneDiceRule;
     private boolean oneDiceEndRule;
     private boolean oneDiceActivated;
@@ -52,6 +53,7 @@ public class Game {
         }
         oneDiceRule = model.isOneDiceEnabled();
         oneDiceEndRule = model.isOneDiceEndEnabled();
+        doubleSixRule = model.isDoubleSixEnabled();
         oneDiceActivated = false;
 
     }
@@ -116,8 +118,8 @@ public class Game {
     public int handleNextTurn(){
         System.out.println("[DEBUG-GAME] Chiamato HandleNextTurn con valore player "+turnPlayerCounter);
         turnPlayerCounter = (turnPlayerCounter+1)%players.size();
-        if(players.get(turnPlayerCounter).isBlocked()){
-            players.get(turnPlayerCounter).setBlocked(false);
+        if(players.get(turnPlayerCounter).isBlocked()>0){
+            players.get(turnPlayerCounter).setBlocked(players.get(turnPlayerCounter).isBlocked()-1);
             turnPlayerCounter = handleNextTurn();
         }
         System.out.println("[DEBUG-GAME] Nuovo valore player nel nuovo turno "+turnPlayerCounter);
@@ -172,6 +174,10 @@ public class Game {
 
     public boolean isOneDiceEndEnabled(){
         return oneDiceEndRule;
+    }
+
+    public boolean isDoubleSixEnabled(){
+        return doubleSixRule;
     }
 
     public Cell[] getPath(Cell start, Cell end, int lancio) {

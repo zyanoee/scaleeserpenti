@@ -30,7 +30,7 @@ public class CardPanel extends JPanel {
 
     public CardPanel(){
         try {
-            cardsFaces = new BufferedImage[3];
+            cardsFaces = new BufferedImage[5];
             try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/molla.png")) {
                     cardsFaces[0] = ImageIO.read(inputStream);
                 }
@@ -39,6 +39,9 @@ public class CardPanel extends JPanel {
                 }
             try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/stop.png")) {
                     cardsFaces[2] = ImageIO.read(inputStream);
+                }
+                try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/locanda.png")) {
+                    cardsFaces[3] = ImageIO.read(inputStream);
                 }
             try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/back.png")) {
                     cardBack = ImageIO.read(inputStream);
@@ -92,7 +95,7 @@ public class CardPanel extends JPanel {
 
     public void showCard(StopEvent ev){
         currentState = State.SHOW_CARD;
-        visibleImage = cardsFaces[2];
+        visibleImage = ev.getTurns()==1 ? cardsFaces[2] : cardsFaces[3];
         Image scaledImage = visibleImage.getScaledInstance(visibleImage.getWidth()/3, visibleImage.getHeight()/3, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(scaledImage));
         repaint();
