@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import entities.concreteclass.concreteEvents.FugaEvent;
 import entities.concreteclass.concreteEvents.MollaEvent;
 import entities.concreteclass.concreteEvents.RerollEvent;
 import entities.concreteclass.concreteEvents.StopEvent;
@@ -23,6 +24,7 @@ public class RandomEventFactory {
         factories.add(new RerollEventFactory());
         factories.add(new StopEventFactory());
         factories.add(new LocandaEventFactory());
+        factories.add(new FugaEventFactory());
     }
 
     public Event createEvent(){
@@ -42,6 +44,12 @@ public class RandomEventFactory {
     class RerollEventFactory implements EventFactory{
         public Event createEvent(){
             return new RerollEvent();
+        }
+    }
+
+    class FugaEventFactory implements EventFactory{
+        public Event createEvent(){
+            return new FugaEvent();
         }
     }
 

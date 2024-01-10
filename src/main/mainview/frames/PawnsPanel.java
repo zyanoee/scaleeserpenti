@@ -6,7 +6,6 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -47,31 +46,26 @@ public class PawnsPanel extends JPanel{
     @Override
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        System.out.println("[DEBUG-PAWNVIEW] Entra nel paintComponent");
             
          if(eventCallback!=null && animationIndex == path.length -1){
             SwingUtilities.invokeLater(() -> {
                 animationIndex = 0;
-                System.out.println("[DEBUG-PAWNVIEW] ATTIVAZIONE EVENT CALLBACK!");
                 eventCallback.onComplete();
                 moving=false;
                 this.eventCallback=null;
                 return;  });
         }
-        if(moving){
-            for(int i=0;i<gb.getNumberOfPlayers();i++){
-                paintPawn(i, g);
-            }
+        for(int i=0;i<gb.getNumberOfPlayers();i++){
+            paintPawn(i, g);
         }
-           
+
        
 
     }
 
     public void paintPawn(int i, Graphics g){
-        System.out.println("[DEBUG-PAWNVIEW] Entrato in paintPawn con valore i = "+i);
         Player pawn = game.getPawn(i);
-        if(i == game.getTurnPlayerCounter()){
+        if(i == game.getTurnPlayerCounter() && moving){
                 animationMovement(g);
         }else {
             int cellWidth = getWidth() / gb.getGridSizeX();
@@ -93,7 +87,6 @@ public class PawnsPanel extends JPanel{
     }
 
     public void animationMovement(Graphics g){
-        System.out.println("[DEBUG-PAWNVIEW] Entrato in animationMovement");
         int cellWidth = getWidth() / gb.getGridSizeX();
         int cellHeight = getHeight() / gb.getGridSizeY();
         int posx = animPosX;
@@ -109,11 +102,9 @@ public class PawnsPanel extends JPanel{
         g2d.drawOval( rotatedX*cellWidth + cellWidth/10 , rotatedY*cellHeight + cellHeight/10 ,cellWidth - cellWidth/5,cellHeight - cellHeight/5);
 
         if ((posx != endPlayerPos[0] || posy != endPlayerPos[1]) || animationIndex < path.length -1) {
-            System.out.println("[DEBUG-PAWNVIEW] Condizione repaint() verificata");
             animationIndex = animationIndex + 1;
             animPosX = path[animationIndex].getPositionX();
             animPosY = path[animationIndex].getPositionY();
-            System.out.println("[DEBUG-PAWNVIEW] ANIMINDEX = " + animationIndex + " PATH SIZE = " + path.length);
             Callback animCallback = () -> {
                 repaint();
             };
@@ -131,12 +122,10 @@ public class PawnsPanel extends JPanel{
         this.eventCallback = callback;
         this.startPlayerPos = startPlayerPos;
         this.endPlayerPos = newPosition;
-        System.out.println("[DEBUG-PAWNVIEW] MovePawn Chiamato");
         this.path = game.getPath(game.getCell(startPlayerPos[0], startPlayerPos[1]), game.getCell(endPlayerPos[0], endPlayerPos[1]), game.getDadi()[0] + game.getDadi()[1]);
         this.animPosX = path[0].getPositionX();
         this.animPosY = path[0].getPositionY();
         moving = true;
-        System.out.println(Arrays.toString(path));
         repaint();
     }
 

@@ -9,10 +9,14 @@ import java.awt.event.MouseEvent;
 
 import javax.swing.SwingUtilities;
 
-import entities.concreteclass.concreteEvents.RerollEvent;
+
 import entities.interfaces.Callback;
-import entities.interfaces.Event;
 import main.mainview.GameView;
+import main.maincommands.DiceRollCommand;
+import main.maincommands.EventHandlerCommand;
+import main.maincommands.MoveCommand;
+import main.maincommands.NextTurnCommand;
+import main.maincommands.SixRollCommand;
 import main.mainmodels.Game;
 
 
@@ -20,22 +24,23 @@ public class GameController {
 
     private Game model;
     private GameView gw;
-
+   
     
 
     public GameController(Game model, GameView gw){
-
         this.model = model;
         this.gw = gw;
         if(model.isOneDiceEndEnabled()){
             gw.getDiceEndCheckbox().setVisible(true);
         }
         gw.showLanciaIDadi(0);
-       
-
     }
+    
+
+
 
     public void startListener(){
+         gw.removeAllListeners();
          gw.getDiceButton().addActionListener(new DiceRollListener());
          gw.getImageLabel().addMouseListener(new CardClickListener());
          gw.getDiceEndCheckbox().addItemListener(new ItemListener() {
@@ -50,68 +55,43 @@ public class GameController {
          });
     }
 
-    class DiceRollListener implements ActionListener{
+    
 
+    public class DiceRollListener implements ActionListener{
+
+    
         @Override
         public void actionPerformed(ActionEvent e) {
-            gw.getDiceButton().setEnabled(false);
-            gw.getDiceEndCheckbox().setEnabled(false);
-
-                
-                int[] dadi;
-                dadi = model.lanciaDadi();
-                int[] currentPlayerPos = new int[]{model.getPlayer().getPositionX(),model.getPlayer().getPositionY()};
-                int[] newPosition = model.muovi(dadi);
-
-
-                Callback callbackDices = () -> {
-                    Callback callbackMove = () -> {
-                        Event event = model.handleEvent();
-                        SwingUtilities.invokeLater(() -> {
-                            Callback callbackEvent = () -> {
-                                System.out.println("[DEBUG-CONTROLLER] Terminato Evento del tipo: "+event);
-                                Callback sixrollCallback = () -> {
-                                    SwingUtilities.invokeLater(() -> {
-                                    int turnPlayer = model.handleNextTurn();
-                                    gw.showLanciaIDadi(turnPlayer);
-                                    gw.getDiceButton().setEnabled(true);
-                                    
-                                     SwingUtilities.invokeLater(() -> {
-                                        gw.getDiceEndCheckbox().setSelected(false);
-                                        if(model.checkDistance()){
-                                            gw.getDiceEndCheckbox().setEnabled(true);
-                                            
-                                        }
-                                     });
-                                });
-                                };
-                                if(model.isDoubleSixEnabled() && dadi[0]==6 && dadi[1]==6){
-                                    RerollEvent rollEvent = new RerollEvent();
-                                    rollEvent.execute(model, gw, sixrollCallback);
-                                } else {
-                                    sixrollCallback.onComplete();
-                                }
-                            };
-                            if(event!=null){
-                                System.out.println("[DEBUG-CONTROLLER] Chiamato evento del tipo: "+event);
-                                event.execute(model, gw, callbackEvent);
-                            }
-                            else{callbackEvent.onComplete();}
-                        });
-                         
-                        
-                       
-                    };
-                    gw.movePawn(currentPlayerPos, newPosition, callbackMove);
-                };
-                gw.showDicesRolled(dadi, callbackDices);
+            new DiceRollCommand(model, gw,
+                new MoveCommand(model, gw, 
+                    new EventHandlerCommand(model, gw, 
+                        new SixRollCommand(model, gw,
+                            new NextTurnCommand(model, gw, null)
+                        )
+                    )
+                )
+            ).execute();
         }
 
+        protected void enableDiceButton(){
+            SwingUtilities.invokeLater(() -> {
+                int turnPlayer = model.handleNextTurn();
+                gw.showLanciaIDadi(turnPlayer);
+                gw.getDiceButton().setEnabled(true);
+                SwingUtilities.invokeLater(() -> {
+                    gw.getDiceEndCheckbox().setSelected(false);
+                    if(model.checkDistance()){
+                        gw.getDiceEndCheckbox().setEnabled(true);                                     
+                    }
+                });
+            });
+        }
     }  
 
     class CardClickListener extends MouseAdapter{
 
         Callback callbackEndEvent;
+        
 
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -131,7 +111,6 @@ public class GameController {
                         model.getLastCard().execute(model, gw, callbackEndEvent);
                     };
                     gw.removeCard(removeCardCallback);
-
                     break;
                 case SET_NULL:
                     break;

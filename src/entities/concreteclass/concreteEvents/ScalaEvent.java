@@ -18,6 +18,7 @@ public class ScalaEvent implements Event {
     public void execute(Game model, GameView gw, Callback callbackEvent) {
         int[] exPos =new int[]{origin.getPositionX(), origin.getPositionY() } ;
         int[] newPos =new int[]{destinationCell.getPositionX(), destinationCell.getPositionY() } ;
+        gw.printMessage(" - Il Giocatore "+model.getTurnPlayerCounter()+" "+getDescription()+" -");
         model.movePosition(newPos);
         Callback callback = () -> {  
             gw.movePawnInstant(exPos, newPos,callbackEvent);
@@ -32,6 +33,10 @@ public class ScalaEvent implements Event {
 
     public void accept(GameView gw){
         
+    }
+
+    public String getDescription(){
+        return "ha raggiunto una Scala! Sale fino alla sua cima";
     }
 
     

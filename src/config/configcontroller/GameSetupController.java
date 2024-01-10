@@ -2,10 +2,14 @@ package config.configcontroller;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 import config.configmodels.GameBoard;
 import config.configmodels.GameConfig;
 import config.configutility.ConfigFileHandler;
+import config.configutility.GameConfigBuilder;
+import config.configutility.GameControllerFactory;
 import config.configview.EditBoardView;
 import config.configview.GameSetupView;
 import main.maincontrollers.GameController;
@@ -19,12 +23,9 @@ public class GameSetupController {
     private GameConfig model;
     private MainframeJFrame mainframe;
 
-    public GameSetupController(GameSetupView view, GameConfig model, MainframeJFrame mainframe) {
+    public GameSetupController(GameSetupView view, MainframeJFrame mainframe) {
         this.view = view;
-        this.model = model;
         this.mainframe = mainframe;
-
-        
     }
 
     public void startListener(){
@@ -42,34 +43,22 @@ public class GameSetupController {
             int gridSizeY = view.getGridSizeY();
             int nScale = view.getNScale();
             int nSerpenti = view.getNSerpenti();
-            boolean enableSpecialRules = view.isSpecialRulesEnabled();
-            boolean enableStopSquares = view.isStopRuleEnabled();
-            boolean enablePrizeSquares = view.isPrizeEnabled();
-            boolean enableCards = view.isCardsEnabled();
-            boolean enableDoubleSixRule = view.isDoubleSixEnabled();
-            boolean enableOneDice = view.isOneDiceEnabled();
-            boolean enableOneDiceEnd = view.isOneDiceEndEnabled();
-            boolean enableCardsAddon = view.isCardsAddonEnabled();
-            boolean wantToEdit = view.wantToEdit();
             
-            
-
-
-
             // Aggiorna il model del Gamecfg
-            model.setNumberOfPlayers(numPlayers);
-            model.setGridSize(gridSizeX, gridSizeY);
-            model.setSpecialRules(enableSpecialRules);
-            model.setBlockSquareRule(enableStopSquares);
-            model.setPrizeSquareRule(enablePrizeSquares);
-            model.setCardsRule(enableCards);
-            model.setDoubleSixRule(enableDoubleSixRule);
-            model.setOneDiceRule(enableOneDice);
-            model.setOneDiceEndRule(enableOneDiceEnd);
-            model.setCardsRuleAddon(enableCardsAddon);
-            model.setEditing(wantToEdit);
-            model.setNScale(nScale);
-            model.setNSerpenti(nSerpenti);
+            model = new GameConfigBuilder(numPlayers, gridSizeX, gridSizeY)
+                .nScale(nScale)
+                .nSerpenti(nSerpenti)
+                .enableSpecialRules(view.isSpecialRulesEnabled())
+                .enableCards(view.isCardsEnabled())
+                .enableCardsAddon(view.isCardsAddonEnabled())
+                .enableStopSquares(view.isStopRuleEnabled())
+                .enablePrizeSquares(view.isPrizeEnabled())
+                .enableDoubleSixRule(view.isDoubleSixEnabled())
+                .enableOneDice(view.isOneDiceEnabled())
+                .enableOneDiceEnd(view.isOneDiceEndEnabled())
+                .wantToEdit(view.wantToEdit())
+                .isAutomatic(false)
+                .build();
             
             SwingUtilities.invokeLater(() -> {
                 if(model.wantToEdit()){
@@ -91,11 +80,16 @@ public class GameSetupController {
 
         private void initializeGameBoardView() {
             ConfigFileHandler.saveConfiguration(mainframe);
+            int choice = JOptionPane.showConfirmDialog(mainframe,
+            "Vuoi abilitare il gioco automatico?", "Gioco Automatico",
+            JOptionPane.YES_NO_OPTION);
+            model.setAutomatic(choice==JOptionPane.YES_OPTION);
             GameBoard board = new GameBoard(model);
             board.generateElements();
             Game game = new Game(model, board);
             GameView gw = new GameView(mainframe, board, model, game);
-            GameController gc = new GameController(game, gw);
+            GameControllerFactory gcf = new GameControllerFactory(game, gw, model.isAutomatic());
+            GameController gc = gcf.create();
             gc.startListener();
             
  
@@ -104,6 +98,11 @@ public class GameSetupController {
 
 
         private void initializeEditBoardView(){
+            ConfigFileHandler.saveConfiguration(mainframe);
+            int choice = JOptionPane.showConfirmDialog(mainframe,
+            "Vuoi abilitare il gioco automatico?", "Gioco Automatico",
+            JOptionPane.YES_NO_OPTION);
+            model.setAutomatic(choice==JOptionPane.YES_OPTION);
             GameBoard editBoard = new GameBoard(model);
             EditBoardView ebview = new EditBoardView(editBoard);
             EditBoardController ebcontroller = new EditBoardController(ebview, editBoard, model, mainframe);

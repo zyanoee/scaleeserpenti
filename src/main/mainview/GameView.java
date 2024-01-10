@@ -3,8 +3,8 @@ package main.mainview;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-
+import java.awt.event.ItemListener;
+import java.awt.event.MouseListener;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -17,6 +17,7 @@ import config.configmodels.GameBoard;
 import config.configmodels.GameConfig;
 import config.configview.GameBoardView;
 import entities.State;
+import entities.concreteclass.concreteEvents.FugaEvent;
 import entities.concreteclass.concreteEvents.MollaEvent;
 import entities.concreteclass.concreteEvents.RerollEvent;
 import entities.concreteclass.concreteEvents.StopEvent;
@@ -25,6 +26,7 @@ import entities.interfaces.Event;
 import main.mainmodels.Game;
 import main.mainview.frames.CardPanel;
 import main.mainview.frames.DicePanel;
+import main.mainview.frames.EventPanel;
 import main.mainview.frames.MainframeJFrame;
 import main.mainview.frames.PawnsPanel;
 
@@ -34,36 +36,46 @@ public class GameView {
     private DicePanel dicePanel;
     private PawnsPanel pawnPanel;
     private CardPanel cardPanel;
+    private EventPanel eventPanel;
     private GameBoardView gbview;
 
     public GameView(MainframeJFrame mainframe, GameBoard board, GameConfig model, Game game){
         
             this.mainframe = mainframe;
             mainframe.getGameZonePanel().removeAll();
+            mainframe.getDiceZonePanel().removeAll();
+            mainframe.getEventZonePanel().removeAll();
             gbview = new GameBoardView(board);
             int dimX = board.getGridSizeX()*50;
             int dimY = board.getGridSizeY()*50;
             gbview.setPreferredSize(new Dimension(dimX,dimY));
-            mainframe.setSize(new Dimension(dimX+250, dimY+280));
+            mainframe.setSize(new Dimension(dimX+320, mainframe.getEventZonePanel().getHeight()+400));
 
             mainframe.getGameZonePanel().setLayout(new OverlayLayout(mainframe.getGameZonePanel()));
             mainframe.getDiceZonePanel().setLayout(new OverlayLayout(mainframe.getDiceZonePanel()));
+            mainframe.getEventZonePanel().setLayout(new OverlayLayout(mainframe.getEventZonePanel()));
+            
     
             pawnPanel = new PawnsPanel(board, game);
             dicePanel = new DicePanel();
             cardPanel = new CardPanel();
+            eventPanel = new EventPanel();
             pawnPanel.setPreferredSize(new Dimension(dimX,dimY));
             dicePanel.setPreferredSize(new Dimension(mainframe.getDiceZonePanel().getWidth(), mainframe.getDiceZonePanel().getHeight()));
+            eventPanel.setPreferredSize(new Dimension(mainframe.getEventZonePanel().getWidth()+20, mainframe.getEventZonePanel().getHeight()+20));
             cardPanel.setPreferredSize(new Dimension(dimX,dimY));
             mainframe.getGameZonePanel().add(cardPanel);
             mainframe.getGameZonePanel().add(pawnPanel);
             mainframe.getDiceZonePanel().add(dicePanel);
             mainframe.getGameZonePanel().add(gbview);
+            mainframe.getEventZonePanel().add(eventPanel);
 
             gbview.validate();
             gbview.repaint();
             pawnPanel.validate();
             pawnPanel.repaint();
+            eventPanel.validate();
+            eventPanel.repaint();
             mainframe.getGameZonePanel().revalidate();
             mainframe.getGameZonePanel().repaint();
             mainframe.revalidate();
@@ -73,6 +85,10 @@ public class GameView {
 
     public JButton getDiceButton(){
         return mainframe.getDiceButton();
+    }
+
+    public MainframeJFrame getMainframe(){
+        return mainframe;
     }
 
     public void showLanciaIDadi(int turnPlayer){
@@ -125,9 +141,11 @@ public class GameView {
     public void showCard(StopEvent e){
         cardPanel.showCard(e);
     }
+    public void showCard(FugaEvent e){
+        cardPanel.showCard(e);
+    }
 
-    public void removeCard(Callback callback){
-        
+    public void removeCard(Callback callback){ 
         cardPanel.setNull();
         SwingUtilities.invokeLater(() -> {
                     callback.onComplete();
@@ -148,6 +166,22 @@ public class GameView {
 
     public Callback getEndCardEventCallback(){
         return cardPanel.getEventCallback();
+    }
+
+    public void printMessage(String s){
+        eventPanel.aggiungiLog(s);
+    }
+
+    public void removeAllListeners(){
+        for(ActionListener listener : getDiceButton().getActionListeners()){
+            getDiceButton().removeActionListener(listener);
+        }
+        for(MouseListener listener : getImageLabel().getMouseListeners()){
+            getImageLabel().removeMouseListener(listener);
+        }
+        for(ItemListener listener : getDiceEndCheckbox().getItemListeners()){
+            getDiceEndCheckbox().removeItemListener(listener);
+        }
     }
 
 

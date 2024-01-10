@@ -19,6 +19,7 @@ public class SerpenteEvent implements Event{
 
         int[] exPos = new int[]{origin.getPositionX(), origin.getPositionY()};
         int[] newPos =new int[]{destinationCell.getPositionX(), destinationCell.getPositionY() } ;
+        gw.printMessage(" - Il Giocatore "+model.getTurnPlayerCounter()+" "+getDescription()+" -");
         model.movePosition(newPos);
         Callback callback = () -> {  
             gw.movePawnInstant(exPos, newPos, callbackEvent);
@@ -33,6 +34,10 @@ public class SerpenteEvent implements Event{
 
     public void accept(GameView gw){
         
+    }
+
+    public String getDescription(){
+        return "non è stato molto fortunato, scivola via lungo il corpo del Sssssserpente";
     }
     
 }

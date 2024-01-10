@@ -1,5 +1,6 @@
 package entities.concreteclass.concreteEvents;
 
+import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
 import entities.interfaces.Callback;
@@ -20,8 +21,16 @@ public class StopEvent implements Event{
             callback.onComplete();
         };
         SwingUtilities.invokeLater(() -> {
-            System.out.println("[DEBUG-EVENTO] Execute di StopEvent Avviato");
-            g.getPlayer().setBlocked(turns);
+            gw.printMessage(" - Il Giocatore "+g.getTurnPlayerCounter()+" "+getDescription()+" -");
+            
+            if(g.isMoreCardEnabled() && g.getNCarteFuga(g.getPlayer()) > 0){
+                boolean playerChoice = showCardChoice(gw);
+                g.handleFugaUsage(g.getPlayer(), playerChoice);
+                if(playerChoice){
+                    gw.printMessage("- Il Giocatore "+g.getTurnPlayerCounter()+" si è dato alla fuga! -");
+                }
+                
+            }else{g.getPlayer().setBlocked(turns);}
             int[] playerPos = new int[]{g.getPlayer().getPositionX(), g.getPlayer().getPositionY()};
             gw.movePawnInstant(playerPos, playerPos, stopCallback);
         });
@@ -32,8 +41,24 @@ public class StopEvent implements Event{
         return turns;
     }
 
+
+    public boolean showCardChoice(GameView gw) {
+        int scelta = JOptionPane.showConfirmDialog(
+                gw.getMainframe(),
+                "Vuoi utilizzare una tua Carta Fuga?",
+                "Conferma",
+                JOptionPane.YES_NO_OPTION
+        );
+
+        return scelta == JOptionPane.YES_OPTION;
+    }
+
     public void accept(GameView gw){
         gw.showCard(this);
+    }
+
+    public String getDescription(){
+        return "è costretto a prendersi una pausa, Stai fermo "+turns+" turni";
     }
 
     

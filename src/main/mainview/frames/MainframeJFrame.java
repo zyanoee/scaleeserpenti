@@ -68,11 +68,11 @@ public class MainframeJFrame extends javax.swing.JFrame {
         eventZonePanel.setLayout(eventZonePanelLayout);
         eventZonePanelLayout.setHorizontalGroup(
             eventZonePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 151, Short.MAX_VALUE)
+            .addGap(0, 250, Short.MAX_VALUE)
         );
         eventZonePanelLayout.setVerticalGroup(
             eventZonePanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 111, Short.MAX_VALUE)
+            .addGap(0, 300, Short.MAX_VALUE)
         );
 
         eventText.setText("Eventi");
@@ -93,7 +93,7 @@ public class MainframeJFrame extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(30, 30, 30)
+                .addGap(14, 14, 14)
                 .addComponent(titleGameLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
@@ -170,5 +170,9 @@ public class MainframeJFrame extends javax.swing.JFrame {
     
     public javax.swing.JCheckBox getOneDiceEndCheckBox(){
         return this.oneDiceButton;
+    }
+
+    public javax.swing.JPanel getEventZonePanel(){
+        return this.eventZonePanel;
     }
 }

@@ -12,6 +12,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import entities.State;
+import entities.concreteclass.concreteEvents.FugaEvent;
 import entities.concreteclass.concreteEvents.MollaEvent;
 import entities.concreteclass.concreteEvents.RerollEvent;
 import entities.concreteclass.concreteEvents.StopEvent;
@@ -40,8 +41,11 @@ public class CardPanel extends JPanel {
             try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/stop.png")) {
                     cardsFaces[2] = ImageIO.read(inputStream);
                 }
-                try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/locanda.png")) {
+            try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/locanda.png")) {
                     cardsFaces[3] = ImageIO.read(inputStream);
+                }
+            try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/fuga.png")) {
+                    cardsFaces[4] = ImageIO.read(inputStream);
                 }
             try (InputStream inputStream = getClass().getResourceAsStream("/assets/cards/back.png")) {
                     cardBack = ImageIO.read(inputStream);
@@ -58,7 +62,6 @@ public class CardPanel extends JPanel {
 
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        System.out.println("[DEBUG-CARDVIEW] Entra nel paintComponent");
         if(visibleImage!=null){
             imageLabel.setVisible(true);
         } else {
@@ -96,6 +99,14 @@ public class CardPanel extends JPanel {
     public void showCard(StopEvent ev){
         currentState = State.SHOW_CARD;
         visibleImage = ev.getTurns()==1 ? cardsFaces[2] : cardsFaces[3];
+        Image scaledImage = visibleImage.getScaledInstance(visibleImage.getWidth()/3, visibleImage.getHeight()/3, Image.SCALE_SMOOTH);
+        imageLabel.setIcon(new ImageIcon(scaledImage));
+        repaint();
+    }
+
+    public void showCard(FugaEvent ev){
+        currentState = State.SHOW_CARD;
+        visibleImage = cardsFaces[4];
         Image scaledImage = visibleImage.getScaledInstance(visibleImage.getWidth()/3, visibleImage.getHeight()/3, Image.SCALE_SMOOTH);
         imageLabel.setIcon(new ImageIcon(scaledImage));
         repaint();

@@ -179,7 +179,6 @@ public class GameBoardView extends JPanel {
     }
 
     public void showScalaSerpente(){
-        System.out.println("[DEBUG-GAMEBOARVIEW] Chiamato ShowScalaSerpente");
         repaint();
     }
 

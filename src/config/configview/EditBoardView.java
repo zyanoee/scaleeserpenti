@@ -72,13 +72,13 @@ public class EditBoardView {
         int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
         if(isScala){
             if( posy!=0){
-                hlightpanel.highlightCell(posx, posy);
+                hlightpanel.highlightCell(posx, posy, true);
                 
             }
             
         }else{
             if(posy!=editBoard.getGridSizeY()-1){
-                hlightpanel.highlightCell(posx,posy);
+                hlightpanel.highlightCell(posx,posy, false);
             }
         }
     }
@@ -88,19 +88,19 @@ public class EditBoardView {
         int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
         if(isScala){
             if( posy<hlightpanel.getSelected()[1]){
-                hlightpanel.highlightCell(posx, posy);
+                hlightpanel.highlightCell(posx, posy, true);
             }
         } else {
             if(posy>hlightpanel.getSelected()[1]){
-                hlightpanel.highlightCell(posx, posy);
+                hlightpanel.highlightCell(posx, posy, false);
             }
         }
     }
 
-    public void highlightPermanent(int x, int y){
+    public void highlightPermanent(int x, int y, boolean isScala){
         int posx = x/(gbview.getWidth() / editBoard.getGridSizeX());
         int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
-        hlightpanel.highlightEnd(posx, posy);
+        hlightpanel.highlightEnd(posx, posy, isScala );
     }
 
     public void highlightSetNull(){

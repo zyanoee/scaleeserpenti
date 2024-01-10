@@ -1,7 +1,9 @@
 package main.mainmodels;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 import config.configmodels.GameBoard;
@@ -12,6 +14,7 @@ import entities.interfaces.Cell;
 import entities.interfaces.Event;
 import entities.interfaces.Player;
 
+
 public class Game {
     private Random scaleserpentiRNG;
     private GameBoard gboard;
@@ -19,9 +22,11 @@ public class Game {
     private boolean oneDiceRule;
     private boolean oneDiceEndRule;
     private boolean oneDiceActivated;
+    private boolean moreCardsRule;
     private int gboardSize;
     private int nPlayers;
     private List<Player> players;
+    private Map<Player, Integer> nCarteFuga;
     private int turnPlayerCounter;
     private LinkedList<Event> cards;
     private Event lastCardDraw;
@@ -29,7 +34,7 @@ public class Game {
     private int dado1;
     private int dado2;
 
-    //private List<Carta> carteFolli;
+
 
 
     
@@ -39,21 +44,28 @@ public class Game {
         gboardSize = gboard.getGridSizeX()*gboard.getGridSizeY() - 1;
         nPlayers = model.getNumberOfPlayers();
         players = new ArrayList<>();
+        nCarteFuga = new HashMap<>();
+
         for(int i = 0; i<nPlayers; i++){
             players.add(new Pawn(i));
+            nCarteFuga.put(players.get(i), 0);
         }
+
         turnPlayerCounter = 0;
         scaleserpentiRNG = new Random();
         cards = new LinkedList<>();
+
         if(model.isCardRuleEnabled()){
             RandomEventFactory ref = new RandomEventFactory();
             for(int i = 0; i<30;i++){
                 cards.add(ref.createEvent());
             }
         }
+
         oneDiceRule = model.isOneDiceEnabled();
         oneDiceEndRule = model.isOneDiceEndEnabled();
         doubleSixRule = model.isDoubleSixEnabled();
+        moreCardsRule = model.isCardsAddonEnabled();
         oneDiceActivated = false;
 
     }
@@ -76,14 +88,13 @@ public class Game {
         return new int[]{dado1,dado2};
     }
 
-    public void movePosition(int[] positions){
+    public void movePosition(int[] positions){ //Muove in posizione specifica
         Player currentPlayer = players.get(turnPlayerCounter);
         currentPlayer.move(positions[0], positions[1]);
     }
 
 
-    public int[] muovi(int[] dadi){
-        System.out.println(dadi[0]+","+dadi[1]);
+    public int[] muovi(int[] dadi){ //Muove per lancio di dadi
         Player currentPlayer = players.get(turnPlayerCounter);
         int currentPosx = currentPlayer.getPositionX();
         int currentPosy = currentPlayer.getPositionY();
@@ -110,20 +121,29 @@ public class Game {
     }
 
     public void handleReroll(){
-        System.out.println("[DEBUG-GAME] Chiamato HandleReroll con valore player "+turnPlayerCounter);
         turnPlayerCounter = turnPlayerCounter!=0 ? turnPlayerCounter-1 : players.size()-1;
-        System.out.println("[DEBUG-GAME] Nuovo valore player "+turnPlayerCounter);
     }
 
     public int handleNextTurn(){
-        System.out.println("[DEBUG-GAME] Chiamato HandleNextTurn con valore player "+turnPlayerCounter);
         turnPlayerCounter = (turnPlayerCounter+1)%players.size();
         if(players.get(turnPlayerCounter).isBlocked()>0){
             players.get(turnPlayerCounter).setBlocked(players.get(turnPlayerCounter).isBlocked()-1);
             turnPlayerCounter = handleNextTurn();
         }
-        System.out.println("[DEBUG-GAME] Nuovo valore player nel nuovo turno "+turnPlayerCounter);
         return turnPlayerCounter;
+    }
+
+     public void handleFuga(Player p){
+        nCarteFuga.put(p, nCarteFuga.get(p)+1);
+    }
+
+    public boolean handleFugaUsage(Player p, boolean playerChoice){
+                if(playerChoice){
+                    int ncardsprevious = nCarteFuga.get(players.get(turnPlayerCounter));
+                    nCarteFuga.put(players.get(turnPlayerCounter), ncardsprevious-1);
+                    return true;
+                }
+        return false;
     }
 
     public Event handleCard(){
@@ -137,6 +157,14 @@ public class Game {
         oneDiceActivated = b;
 
     }
+
+    public int getNCarteFuga(Player p){
+        return nCarteFuga.get(getPlayer());
+    }
+
+    
+
+   
 
      public int[] getDadi(){
         return new int[]{dado1, dado2};
@@ -178,6 +206,10 @@ public class Game {
 
     public boolean isDoubleSixEnabled(){
         return doubleSixRule;
+    }
+
+    public boolean isMoreCardEnabled(){
+        return moreCardsRule;
     }
 
     public Cell[] getPath(Cell start, Cell end, int lancio) {

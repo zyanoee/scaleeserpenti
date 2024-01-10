@@ -16,7 +16,7 @@ public class CardEvent implements Event{
 
     }
     public void execute(Game g, GameView gw, Callback callback) {
-        System.out.println("[DEBUG-EVENTO] Execute di CardEvent Avviato");
+        gw.printMessage(" - Il Giocatore "+g.getTurnPlayerCounter()+" "+getDescription()+" -");
         Callback animationCallback = () -> {
             g.handleCard();
             gw.showDeck(callback);
@@ -34,6 +34,10 @@ public class CardEvent implements Event{
 
     public void accept(GameView gw){
 
+    }
+
+    public String getDescription(){
+        return "deve pescare una Carta-Folle, cosa ne uscirà? ";
     }
 
     

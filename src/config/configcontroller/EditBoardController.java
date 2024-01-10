@@ -10,6 +10,7 @@ import javax.swing.SwingUtilities;
 
 import config.configmodels.GameBoard;
 import config.configmodels.GameConfig;
+import config.configutility.GameControllerFactory;
 import config.configview.EditBoardView;
 import main.maincontrollers.GameController;
 import main.mainmodels.Game;
@@ -46,7 +47,8 @@ public class EditBoardController {
             eboard.generateSpecialElements();
             Game game = new Game(gconfig, eboard);
             GameView gw = new GameView(mainframe, eboard, gconfig, game);
-            GameController gc = new GameController(game, gw);
+            GameControllerFactory gcf = new GameControllerFactory(game, gw, gconfig.isAutomatic());
+            GameController gc = gcf.create();
             gc.startListener();
             ebview.disposeFrame();
     }
@@ -67,7 +69,7 @@ class EditBoardMouseListener implements MouseListener{
                 int inverseY = eboard.getGridSizeY() - y - 1;
                 boolean esit = eboard.selectScalaSerpente(x,inverseY,isScala);
                 if(esit){
-                    ebview.highlightPermanent(e.getX(), e.getY());
+                    ebview.highlightPermanent(e.getX(), e.getY(), isScala);
                     SwingUtilities.invokeLater(() -> {
                     ebview.highlightSetNull();
                     ebview.setState(EditViewState.ONE_SELECTED);
@@ -83,7 +85,6 @@ class EditBoardMouseListener implements MouseListener{
                 inverseY = eboard.getGridSizeY() - y - 1;   
                 int[] selected = ebview.getSelected();
                 int inverseSelectedY = eboard.getGridSizeY() - selected[1] - 1;
-                System.out.println("[DEBUG-CONTROLLEREDIT] Selezionati: "+selected[0]+","+inverseSelectedY+" Nuovi: "+x+","+inverseY);
                 esit = eboard.addScalaSerpente(selected[0],inverseSelectedY,x,inverseY,isScala);
                 if(esit){
                     ebview.highlightSetNullPermanent();

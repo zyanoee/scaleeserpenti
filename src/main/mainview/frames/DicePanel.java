@@ -57,8 +57,6 @@ public class DicePanel extends JPanel {
             face1Index = face1;
             face2Index = face2;
             repaint(); 
-        } else {
-            System.out.println("[DEBUG-DICEVIEW] Valori non validi per le facce del dado.");
         }
     }
 

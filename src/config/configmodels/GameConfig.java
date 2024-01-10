@@ -6,7 +6,8 @@ import java.io.PrintWriter;
 import java.util.Properties;
 
 
-// Design Pattern: Singleton Pattern
+
+
 public class GameConfig {
     private static GameConfig instance;
     private int numberOfPlayers;
@@ -23,18 +24,10 @@ public class GameConfig {
     private boolean enableOneDice = false;
     private boolean enableOneDiceEnd = false;
     private boolean wantToEdit;
+    private boolean isAutomatic;
 
 
     private GameConfig() {
-        // Inizializza le impostazioni predefinite del gioco
-        numberOfPlayers = 2;
-        gridSizeX = 10;
-        gridSizeY = 10;
-        nScale = Math.min(gridSizeX,gridSizeY);
-        nSerpenti = Math.min(gridSizeX,gridSizeY);
-
-        enableSpecialRules = false;
-        wantToEdit = false;
         
     }
 
@@ -98,6 +91,15 @@ public class GameConfig {
     public int getNSerpenti(){
         return nSerpenti;
     }
+
+    public boolean isAutomatic(){
+        return isAutomatic;
+    }
+
+    public void setAutomatic(boolean b){
+        isAutomatic = b;
+    }
+    
 
 
     //REGOLE SPECIALI
@@ -173,7 +175,6 @@ public class GameConfig {
         Properties prop = new Properties();
         prop.load(reader);
         this.numberOfPlayers = Integer.parseInt(prop.getProperty("numberOfPlayers"));
-        System.out.println("La Property NUMBER OF PLAYER vale = "+prop.getProperty("numberOfPlayers"));
         this.gridSizeX = Integer.parseInt(prop.getProperty("gridSizeX"));
         this.gridSizeY = Integer.parseInt(prop.getProperty("gridSizeY"));
         this.nScale = Integer.parseInt(prop.getProperty("nScale"));

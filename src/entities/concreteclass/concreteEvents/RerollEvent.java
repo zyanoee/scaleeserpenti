@@ -21,7 +21,7 @@ public class RerollEvent implements Event{
             callback.onComplete();
         };
         SwingUtilities.invokeLater(() -> {
-            System.out.println("[DEBUG-EVENTO] Execute di RerollEvent Avviato");
+            gw.printMessage(" - Il Giocatore "+g.getTurnPlayerCounter()+" "+getDescription()+" -");
             int[] playerPos = new int[]{g.getPlayer().getPositionX(), g.getPlayer().getPositionY()};
             gw.movePawnInstant(playerPos, playerPos, stopCallback);
         });
@@ -29,6 +29,10 @@ public class RerollEvent implements Event{
 
     public void accept(GameView gw){
         gw.showCard(this);
+    }
+
+    public String getDescription(){
+        return "ha ricevuto una seconda possibilità! Rilancia i dadi";
     }
 
     

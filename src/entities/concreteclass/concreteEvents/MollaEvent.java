@@ -16,7 +16,7 @@ public class MollaEvent implements Event {
         int[] exPos = new int[]{g.getPlayer().getPositionX(), g.getPlayer().getPositionY()};
         int[] newPos = g.muovi(dadi);
          Callback callback = () -> {  
-            System.out.println("[DEBUG-EVENTO] Repainting pedina post Scala/Serpente");
+            gw.printMessage(" - Il Giocatore "+g.getTurnPlayerCounter()+" "+getDescription()+" -");
             Callback callbackMovement = () -> {
                 Event event = g.handleEvent();
                 if(event!=null){
@@ -33,6 +33,10 @@ public class MollaEvent implements Event {
 
     public void accept(GameView gw){
         gw.showCard(this);
+    }
+
+    public String getDescription(){
+        return "ha fatto un bel balzo ed è avanzato dello stesso numero del lancio!";
     }
 
     
