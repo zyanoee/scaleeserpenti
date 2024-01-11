@@ -17,7 +17,7 @@ public class FugaEvent implements Event{
         };
         SwingUtilities.invokeLater(() -> {
             gw.printMessage(" - Il Giocatore "+g.getTurnPlayerCounter()+" "+getDescription()+" -");
-            g.handleFuga(g.getPlayer());
+            g.increaseFugaCard(g.getPlayer());
             int[] playerPos = new int[]{g.getPlayer().getPositionX(), g.getPlayer().getPositionY()};
             gw.movePawnInstant(playerPos, playerPos, stopCallback);
         });

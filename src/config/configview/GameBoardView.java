@@ -6,8 +6,9 @@ import java.awt.*;
 import entities.concreteclass.concreteCells.ScalaCell;
 import entities.concreteclass.concreteCells.SerpenteCell;
 import entities.interfaces.Cell;
+import entities.interfaces.GameBoardInterface;
 import entities.interfaces.SpecialCell;
-import config.configmodels.GameBoard;
+
 
 import java.util.List;
 import java.util.ArrayList;
@@ -16,12 +17,12 @@ public class GameBoardView extends JPanel {
     private int gridSizeX;
     private int gridSizeY;
     private Cell[][] grid;
-    private GameBoard model;
+    private GameBoardInterface model;
     private List<Cell> snakes;
     private List<Cell> scale;
     
 
-    public GameBoardView(GameBoard model) {
+    public GameBoardView(GameBoardInterface model) {
         this.model = model;
         gridSizeX = model.getGridSizeX();
         gridSizeY = model.getGridSizeY();
@@ -178,9 +179,6 @@ public class GameBoardView extends JPanel {
         
     }
 
-    public void showScalaSerpente(){
-        repaint();
-    }
 
 
 

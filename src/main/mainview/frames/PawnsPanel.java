@@ -11,35 +11,32 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import config.configmodels.GameBoard;
 import entities.interfaces.Callback;
 import entities.interfaces.Cell;
+import entities.interfaces.GameBoardInterface;
 import entities.interfaces.Player;
 import main.mainmodels.Game;
+import main.mainview.AnimationManager;
 
 public class PawnsPanel extends JPanel{
     
 
-    private GameBoard gb;
+    private GameBoardInterface gb;
     private Game game;
     private int[] startPlayerPos;
     private int[] endPlayerPos;
     private Cell[] path;
     private Callback eventCallback;
-    private int animPosX;
-    private int animPosY;
-    private static int animationIndex = 0;
-    private static boolean moving = true;
+    private AnimationManager animationManager;
 
-    public PawnsPanel(GameBoard gb, Game game){
+    public PawnsPanel(GameBoardInterface gb, Game game) {
         this.gb = gb;
         this.game = game;
         setOpaque(false);
         this.startPlayerPos = new int[]{0,0};
         this.endPlayerPos = new int[]{0,0};
         this.path = new Cell[]{game.getCell(0, 0)};
-        this.animPosX = 0;
-        this.animPosY = 0;
+        animationManager = new AnimationManager(this);
 
     }
 
@@ -47,15 +44,14 @@ public class PawnsPanel extends JPanel{
     public void paintComponent(Graphics g){
         super.paintComponent(g);
             
-         if(eventCallback!=null && animationIndex == path.length -1){
+        if(eventCallback!=null && animationManager.getAnimationIndex() == path.length -1){
             SwingUtilities.invokeLater(() -> {
-                animationIndex = 0;
+                animationManager.reset();
                 eventCallback.onComplete();
-                moving=false;
                 this.eventCallback=null;
                 return;  });
         }
-        for(int i=0;i<gb.getNumberOfPlayers();i++){
+        for(int i=0;i<game.getNumberOfPlayers();i++){
             paintPawn(i, g);
         }
 
@@ -63,15 +59,27 @@ public class PawnsPanel extends JPanel{
 
     }
 
+
     public void paintPawn(int i, Graphics g){
         Player pawn = game.getPawn(i);
-        if(i == game.getTurnPlayerCounter() && moving){
+        if(i == game.getTurnPlayerCounter() && animationManager.getMoving()){
                 animationMovement(g);
         }else {
-            int cellWidth = getWidth() / gb.getGridSizeX();
+            renderPawn(pawn,pawn.getPositionX(), pawn.getPositionY(), g);
+        }
+        
+    }
+
+    public void animationMovement(Graphics g){
+        renderPawn(game.getPlayer(), animationManager.getAnimationPosX(), animationManager.getAnimationPosY(), g);
+        animationManager.startAnimation(endPlayerPos[0], endPlayerPos[1], path);
+    }
+
+    public void renderPawn(Player pawn, int posx1, int posy1, Graphics g){
+        int cellWidth = getWidth() / gb.getGridSizeX();
             int cellHeight = getHeight() / gb.getGridSizeY();
-            int posx = pawn.getPositionX();
-            int posy = pawn.getPositionY();
+            int posx = posx1;
+            int posy = posy1;
             int rotatedX = posx;
             int rotatedY = (gb.getGridSizeY() - posy - 1);
             g.setColor(pawn.getColor());
@@ -79,40 +87,11 @@ public class PawnsPanel extends JPanel{
 
             Graphics2D g2d = (Graphics2D) g;
             g2d.setColor(Color.BLACK);
-            float strokeWidth = 3.0f; // Modifica il valore a tuo piacimento
+            float strokeWidth = 3.0f;
             g2d.setStroke(new BasicStroke(strokeWidth));
             g2d.drawOval( rotatedX*cellWidth + cellWidth/10 , rotatedY*cellHeight + cellHeight/10 ,cellWidth - cellWidth/5,cellHeight - cellHeight/5);
-        }
-        
+
     }
-
-    public void animationMovement(Graphics g){
-        int cellWidth = getWidth() / gb.getGridSizeX();
-        int cellHeight = getHeight() / gb.getGridSizeY();
-        int posx = animPosX;
-        int posy = animPosY;
-        int rotatedX = posx;
-        int rotatedY = (gb.getGridSizeY() - posy - 1);
-        g.setColor(game.getPlayer().getColor());
-        g.fillOval( rotatedX*cellWidth + cellWidth/10 , rotatedY*cellHeight + cellHeight/10 ,cellWidth - 2*cellWidth/10,cellHeight - 2*cellHeight/10);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setColor(Color.BLACK);
-        float strokeWidth = 3.0f; // Modifica il valore a tuo piacimento
-        g2d.setStroke(new BasicStroke(strokeWidth));
-        g2d.drawOval( rotatedX*cellWidth + cellWidth/10 , rotatedY*cellHeight + cellHeight/10 ,cellWidth - cellWidth/5,cellHeight - cellHeight/5);
-
-        if ((posx != endPlayerPos[0] || posy != endPlayerPos[1]) || animationIndex < path.length -1) {
-            animationIndex = animationIndex + 1;
-            animPosX = path[animationIndex].getPositionX();
-            animPosY = path[animationIndex].getPositionY();
-            Callback animCallback = () -> {
-                repaint();
-            };
-            animTimer(150, animCallback);
-        } 
-
-
-}
 
 
         
@@ -123,9 +102,8 @@ public class PawnsPanel extends JPanel{
         this.startPlayerPos = startPlayerPos;
         this.endPlayerPos = newPosition;
         this.path = game.getPath(game.getCell(startPlayerPos[0], startPlayerPos[1]), game.getCell(endPlayerPos[0], endPlayerPos[1]), game.getDadi()[0] + game.getDadi()[1]);
-        this.animPosX = path[0].getPositionX();
-        this.animPosY = path[0].getPositionY();
-        moving = true;
+        animationManager.setPosition(path[0].getPositionX(), path[0].getPositionY());
+        animationManager.setMoving(true);
         repaint();
     }
 
@@ -134,7 +112,7 @@ public class PawnsPanel extends JPanel{
         this.startPlayerPos = startPlayerPos;
         this.endPlayerPos = newPosition;
         this.path = new Cell[]{game.getCell(this.startPlayerPos[0],this.startPlayerPos[1]),game.getCell(endPlayerPos[0],endPlayerPos[1])};
-        moving = true;
+        animationManager.setMoving(true);
         repaint();
     }
 

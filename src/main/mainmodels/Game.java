@@ -6,18 +6,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import config.configmodels.GameBoard;
+
 import config.configmodels.GameConfig;
 import entities.concreteclass.Pawn;
 import entities.concreteclass.RandomEventFactory;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
+import entities.interfaces.GameBoardInterface;
 import entities.interfaces.Player;
 
 
 public class Game {
     private Random scaleserpentiRNG;
-    private GameBoard gboard;
+    private GameBoardInterface gboard;
     private boolean doubleSixRule;
     private boolean oneDiceRule;
     private boolean oneDiceEndRule;
@@ -39,7 +40,7 @@ public class Game {
 
     
 
-    public Game(GameConfig model, GameBoard gboard) {
+    public Game(GameConfig model, GameBoardInterface gboard) {
         this.gboard = gboard;
         gboardSize = gboard.getGridSizeX()*gboard.getGridSizeY() - 1;
         nPlayers = model.getNumberOfPlayers();
@@ -57,6 +58,9 @@ public class Game {
 
         if(model.isCardRuleEnabled()){
             RandomEventFactory ref = new RandomEventFactory();
+            if(model.isCardsAddonEnabled()){
+                ref.addFugaCards();
+            }
             for(int i = 0; i<30;i++){
                 cards.add(ref.createEvent());
             }
@@ -68,14 +72,6 @@ public class Game {
         moreCardsRule = model.isCardsAddonEnabled();
         oneDiceActivated = false;
 
-    }
-
-    public int getTurnPlayerCounter(){
-        return this.turnPlayerCounter;
-    }
-
-    public Player getPawn(int i){
-        return this.players.get(i);
     }
 
 
@@ -115,14 +111,6 @@ public class Game {
         return actualCell.generateEvent();
     }
 
-    public int[] handleScaleSerpenti(){
-        Player currentPlayer = players.get(turnPlayerCounter);
-        return new int[]{ currentPlayer.getPositionX() , currentPlayer.getPositionY() };
-    }
-
-    public void handleReroll(){
-        turnPlayerCounter = turnPlayerCounter!=0 ? turnPlayerCounter-1 : players.size()-1;
-    }
 
     public int handleNextTurn(){
         turnPlayerCounter = (turnPlayerCounter+1)%players.size();
@@ -133,16 +121,16 @@ public class Game {
         return turnPlayerCounter;
     }
 
-     public void handleFuga(Player p){
+     public void increaseFugaCard(Player p){
         nCarteFuga.put(p, nCarteFuga.get(p)+1);
     }
 
     public boolean handleFugaUsage(Player p, boolean playerChoice){
-                if(playerChoice){
-                    int ncardsprevious = nCarteFuga.get(players.get(turnPlayerCounter));
-                    nCarteFuga.put(players.get(turnPlayerCounter), ncardsprevious-1);
-                    return true;
-                }
+        if(playerChoice){
+            int ncardsprevious = nCarteFuga.get(players.get(turnPlayerCounter));
+            nCarteFuga.put(players.get(turnPlayerCounter), ncardsprevious-1);
+            return true;
+        }
         return false;
     }
 
@@ -158,16 +146,31 @@ public class Game {
 
     }
 
+
+    //GETTER SETTERS & UTIL
+
+    public int getTurnPlayerCounter(){
+        return this.turnPlayerCounter;
+    }
+
+    public void setTurnPlayerCounter(int turn){
+        this.turnPlayerCounter = turn;
+    }
+
+    public Player getPawn(int i){
+        return this.players.get(i);
+    }
+
     public int getNCarteFuga(Player p){
         return nCarteFuga.get(getPlayer());
     }
 
-    
-
-   
-
      public int[] getDadi(){
         return new int[]{dado1, dado2};
+    }
+
+    public int getNumberOfPlayers(){
+        return players.size();
     }
 
     public Player getPlayer(){
@@ -186,18 +189,8 @@ public class Game {
         return gboard.getCell(x,y);
     }
 
-    public boolean checkDistance(){
-        if(oneDiceEndRule){
-            Player currentPlayer = players.get(turnPlayerCounter);
-            if(gboardSize - getNumberFromPlayer(currentPlayer) <= 6){
-                return true;
-            }
-        }
-        return false;
-    }
-
     public int getNumberFromPlayer(Player p){
-        return gboard.getNumberByPos(p.getPositionX(), p.getPositionY());
+        return gboard.getCell(p.getPositionX(), p.getPositionY()).getNumber();
     }
 
     public boolean isOneDiceEndEnabled(){
@@ -245,6 +238,16 @@ public class Game {
     
             return ret;
         }
+    }
+
+    public boolean checkDistance(){
+        if(oneDiceEndRule){
+            Player currentPlayer = players.get(turnPlayerCounter);
+            if(gboardSize - getNumberFromPlayer(currentPlayer) <= 6){
+                return true;
+            }
+        }
+        return false;
     }
 
     

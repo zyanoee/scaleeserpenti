@@ -24,13 +24,16 @@ public class RandomEventFactory {
         factories.add(new RerollEventFactory());
         factories.add(new StopEventFactory());
         factories.add(new LocandaEventFactory());
-        factories.add(new FugaEventFactory());
     }
 
     public Event createEvent(){
         Random random = new Random();
         int randomIndex = random.nextInt(factories.size());
         return factories.get(randomIndex).createEvent();
+    }
+
+    public void addFugaCards(){
+        factories.add(new FugaEventFactory());
     }
     
     

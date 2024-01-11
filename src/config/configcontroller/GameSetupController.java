@@ -12,6 +12,8 @@ import config.configutility.GameConfigBuilder;
 import config.configutility.GameControllerFactory;
 import config.configview.EditBoardView;
 import config.configview.GameSetupView;
+import entities.interfaces.EditBoardInterface;
+import entities.interfaces.GameBoardInterface;
 import main.maincontrollers.GameController;
 import main.mainmodels.Game;
 import main.mainview.GameView;
@@ -84,7 +86,7 @@ public class GameSetupController {
             "Vuoi abilitare il gioco automatico?", "Gioco Automatico",
             JOptionPane.YES_NO_OPTION);
             model.setAutomatic(choice==JOptionPane.YES_OPTION);
-            GameBoard board = new GameBoard(model);
+            GameBoardInterface board = new GameBoard(model);
             board.generateElements();
             Game game = new Game(model, board);
             GameView gw = new GameView(mainframe, board, model, game);
@@ -103,7 +105,7 @@ public class GameSetupController {
             "Vuoi abilitare il gioco automatico?", "Gioco Automatico",
             JOptionPane.YES_NO_OPTION);
             model.setAutomatic(choice==JOptionPane.YES_OPTION);
-            GameBoard editBoard = new GameBoard(model);
+            EditBoardInterface editBoard = new GameBoard(model);
             EditBoardView ebview = new EditBoardView(editBoard);
             EditBoardController ebcontroller = new EditBoardController(ebview, editBoard, model, mainframe);
             ebcontroller.startListener();

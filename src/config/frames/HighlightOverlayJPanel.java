@@ -5,11 +5,12 @@ import java.awt.Graphics;
 
 import javax.swing.JPanel;
 
-import config.configmodels.GameBoard;
+import config.configutility.EditBoardState;
+import entities.interfaces.EditBoardInterface;
 
 public class HighlightOverlayJPanel extends JPanel {
 
-    private GameBoard editBoard;
+    private EditBoardInterface editBoard;
     private int cellSizeX;
     private int cellSizeY;
     private int[] highlightedCell;
@@ -17,7 +18,7 @@ public class HighlightOverlayJPanel extends JPanel {
     private Color color;
     private Color colorEnlighted;
 
-    public HighlightOverlayJPanel(GameBoard editBoard){
+    public HighlightOverlayJPanel(EditBoardInterface editBoard){
         this.editBoard = editBoard;
 
         setOpaque(false);
@@ -53,24 +54,18 @@ public class HighlightOverlayJPanel extends JPanel {
         }
     }
 
-    public void highlightCell(int x, int y, boolean isScala){
+    public void highlightCell(int x, int y, EditBoardState ebstate){
         
         highlightedCell = new int[]{x,y};
-        if(isScala){
-            color = Color.decode("#5c9aff");
-        } else {
-            color = Color.decode("#fa5a72");
-        }
+        color = ebstate.getColorHover();
+
         repaint();
     }
 
-    public void highlightEnd(int x, int y, boolean isScala){
+    public void highlightEnd(int x, int y, EditBoardState ebstate){
         secondHighlightedCell = new int[]{x,y};
-        if(isScala){
-            colorEnlighted = Color.decode("#0000ff");
-        } else {
-            colorEnlighted = Color.decode("#ff0000");
-        }
+        colorEnlighted = ebstate.getColor();
+        
         repaint();
 
     }

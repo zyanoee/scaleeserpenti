@@ -1,26 +1,33 @@
 package config.configview;
 
 import java.awt.Dimension;
+import java.util.Enumeration;
 
+import javax.swing.AbstractButton;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JRadioButton;
 import javax.swing.OverlayLayout;
 
 
 import config.configcontroller.EditViewState;
-import config.configmodels.GameBoard;
+import config.configutility.EditBoardState;
+import config.configutility.states.ScalaState;
+import config.configutility.states.SerpenteState;
 import config.frames.BoardCustomizerJFrame;
 import config.frames.HighlightOverlayJPanel;
+import entities.interfaces.EditBoardInterface;
 
 public class EditBoardView {
 
-    private GameBoard editBoard;
+    private EditBoardInterface editBoard;
     private GameBoardView gbview;
     private HighlightOverlayJPanel hlightpanel; 
     private BoardCustomizerJFrame editFrame;
     private EditViewState state;
 
-    public EditBoardView(GameBoard editBoard){
+    public EditBoardView(EditBoardInterface editBoard){
             this.editBoard = editBoard;
             editFrame = new BoardCustomizerJFrame();
             editFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -66,41 +73,78 @@ public class EditBoardView {
         return hlightpanel;
     }
 
-    public void highlightCell(int x, int y, boolean isScala){
-        
+
+    public void highlightCell(int x, int y, SerpenteState serpenteState){
         int posx = x/(gbview.getWidth() / editBoard.getGridSizeX());
         int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
-        if(isScala){
-            if( posy!=0){
-                hlightpanel.highlightCell(posx, posy, true);
+        if(posy!=editBoard.getGridSizeY()-1){
+            hlightpanel.highlightCell(posx,posy, serpenteState);
+        }
+    }
+
+    public void highlightCell(int x, int y, ScalaState scalaState){
+        int posx = x/(gbview.getWidth() / editBoard.getGridSizeX());
+        int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
+        if( posy!=0){
+                hlightpanel.highlightCell(posx, posy, scalaState);
                 
             }
-            
-        }else{
-            if(posy!=editBoard.getGridSizeY()-1){
-                hlightpanel.highlightCell(posx,posy, false);
-            }
+    }
+
+    public void highlightCell(int x, int y, EditBoardState ebstate){
+        int posx = x/(gbview.getWidth() / editBoard.getGridSizeX());
+        int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
+        hlightpanel.highlightCell(posx, posy, ebstate);
+    }
+
+    public void highlightCell2(int x, int y, ScalaState scalaState){
+        int posx = x/(gbview.getWidth() / editBoard.getGridSizeX());
+        int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
+        if( posy<hlightpanel.getSelected()[1]){
+            hlightpanel.highlightCell(posx, posy, scalaState);
         }
     }
 
-    public void highlightCell2(int x, int y, boolean isScala){
+    public void highlightCell2(int x, int y, SerpenteState serpenteState){
         int posx = x/(gbview.getWidth() / editBoard.getGridSizeX());
         int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
-        if(isScala){
-            if( posy<hlightpanel.getSelected()[1]){
-                hlightpanel.highlightCell(posx, posy, true);
-            }
-        } else {
-            if(posy>hlightpanel.getSelected()[1]){
-                hlightpanel.highlightCell(posx, posy, false);
-            }
+        if( posy>hlightpanel.getSelected()[1]){
+            hlightpanel.highlightCell(posx, posy, serpenteState);
         }
     }
 
-    public void highlightPermanent(int x, int y, boolean isScala){
+    public void highlightCell2(int x, int y, EditBoardState ebstate){
         int posx = x/(gbview.getWidth() / editBoard.getGridSizeX());
         int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
-        hlightpanel.highlightEnd(posx, posy, isScala );
+        hlightpanel.highlightCell(posx, posy, ebstate);
+        
+    }
+
+    public void setAllRadio(boolean b){
+        ButtonGroup buttonGroup = editFrame.getStatebuttonGroup();
+
+        Enumeration<AbstractButton> buttons = buttonGroup.getElements();
+        while (buttons.hasMoreElements()) {
+            AbstractButton button = buttons.nextElement();
+            button.setEnabled(b);
+        }
+    }
+
+    public void setAllRuleButtons(boolean b){
+        editFrame.getStopButton().setEnabled(b);
+        editFrame.getLocandaButton().setEnabled(b);
+        editFrame.getRerollButton().setEnabled(b);
+        editFrame.getMollaButton().setEnabled(b);
+        editFrame.getCardButton().setEnabled(b);
+    }
+
+
+
+
+    public void highlightPermanent(int x, int y, EditBoardState ebstate){
+        int posx = x/(gbview.getWidth() / editBoard.getGridSizeX());
+        int posy = y/(gbview.getHeight() / editBoard.getGridSizeY());
+        hlightpanel.highlightEnd(posx, posy, ebstate );
     }
 
     public void highlightSetNull(){
@@ -125,6 +169,34 @@ public class EditBoardView {
 
     public void disposeFrame(){
         editFrame.disposeFrame();
+    }
+
+    public JRadioButton getScalaButton() {
+        return editFrame.getScalaButton();
+    }
+
+    public JRadioButton getSerpenteButton() {
+        return editFrame.getSerpenteButton();
+    }
+
+    public JRadioButton getRerollButton() {
+        return editFrame.getRerollButton();
+    }
+
+    public JRadioButton getMollaButton() {
+        return editFrame.getMollaButton();
+    }
+
+    public JRadioButton getStopButton() {
+        return editFrame.getStopButton();
+    }
+
+    public JRadioButton getLocandaButton() {
+        return editFrame.getLocandaButton();
+    }
+
+    public JRadioButton getCardButton() {
+        return editFrame.getCardButton();
     }
 
 

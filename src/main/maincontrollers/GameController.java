@@ -7,9 +7,6 @@ import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
-import javax.swing.SwingUtilities;
-
-
 import entities.interfaces.Callback;
 import main.mainview.GameView;
 import main.maincommands.DiceRollCommand;
@@ -73,19 +70,6 @@ public class GameController {
             ).execute();
         }
 
-        protected void enableDiceButton(){
-            SwingUtilities.invokeLater(() -> {
-                int turnPlayer = model.handleNextTurn();
-                gw.showLanciaIDadi(turnPlayer);
-                gw.getDiceButton().setEnabled(true);
-                SwingUtilities.invokeLater(() -> {
-                    gw.getDiceEndCheckbox().setSelected(false);
-                    if(model.checkDistance()){
-                        gw.getDiceEndCheckbox().setEnabled(true);                                     
-                    }
-                });
-            });
-        }
     }  
 
     class CardClickListener extends MouseAdapter{

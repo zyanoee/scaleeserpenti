@@ -10,14 +10,15 @@ import entities.concreteclass.concreteCells.ScalaCell;
 import entities.concreteclass.concreteCells.SerpenteCell;
 import entities.concreteclass.concreteCells.WinCell;
 import entities.interfaces.Cell;
+import entities.interfaces.EditBoardInterface;
 
-public class GameBoard {
+
+public class GameBoard implements EditBoardInterface{
     private Cell[][] grid;
     List<Cell> normalCells;
-    List<ScalaCell> scale;
-    List<SerpenteCell> serpenti;
+    List<Cell> scale;
+    List<Cell> serpenti;
     private GameConfig config;
-    private int numPlayers;
     private int nScale;
     private int nSerpenti;
 
@@ -30,13 +31,12 @@ public class GameBoard {
         normalCells = new ArrayList<>();
         scale = new ArrayList<>();
         serpenti = new ArrayList<>();
-        numPlayers = model.getNumberOfPlayers();
         nScale = model.getNScale();
         nSerpenti = model.getNSerpenti();
         initializeGrid();
     }
 
-    private void initializeGrid() {
+    public void initializeGrid() {
         generateNormalCell();
         generateWinCell();
         setSuccessivi();
@@ -54,13 +54,6 @@ public class GameBoard {
         setSuccessivi();
     }
 
-    public int getNumberOfPlayers(){
-        return this.numPlayers;
-    }
-
-    public Cell getCellValue(int x, int y) {
-        return grid[x][y];
-    }
 
     private void generateNormalCell(){
         for(int i=0; i<grid.length;i++){
@@ -115,31 +108,17 @@ public class GameBoard {
     }
     
 
-    public boolean addScalaSerpente(int x, int y, int x2, int y2, boolean isScala){
-        if(isScala){
-            return addScala(x,y,x2,y2);
-        } else {
-            return addSerpente(x,y,x2,y2);
-        }
-    }
 
-    public boolean selectScalaSerpente(int x, int y, boolean isScala){
-        if(isScala){
-            return selectScala(x,y);
-        } else {
-            return selectSerpente(x,y);
-        }
-    }
 
-    private boolean selectScala(int x, int y){
+    public boolean selectScala(int x, int y){
         return isNormal(x, y) && y!=grid.length-1 && normalCells.contains(grid[x][y]);
     }
 
-    private boolean selectSerpente(int x, int y){
+    public boolean selectSerpente(int x, int y){
         return isNormal(x,y) && y!=0 && normalCells.contains(grid[x][y]);
     }
 
-    private boolean addScala(int x, int y, int x2, int y2){
+    public boolean addScala(int x, int y, int x2, int y2){
         Cell cell = grid[x][y];
         Cell cellCima = grid[x2][y2];
         if((!cellCima.isSpecial()) && normalCells.contains(cellCima) && y<y2){
@@ -154,7 +133,7 @@ public class GameBoard {
         return false;
     }
 
-    private boolean addSerpente(int x, int y, int x2, int y2){
+    public boolean addSerpente(int x, int y, int x2, int y2){
         Cell cell = grid[x][y];
         Cell cellCoda = grid[x2][y2];
         if((!cellCoda.isSpecial()) && normalCells.contains(cellCoda) && y>y2){
@@ -171,7 +150,12 @@ public class GameBoard {
     }
 
     public boolean isNormal(int x, int y){
-        return !grid[x][y].isSpecial();
+        return (!grid[x][y].isSpecial())&&normalCells.contains(grid[x][y]);
+    }
+
+    public boolean addRuleCell(Cell cell){
+        grid[cell.getPositionX()][cell.getPositionY()]=cell;
+        return true;
     }
 
     
@@ -200,11 +184,6 @@ public class GameBoard {
         .orElse(null);
     }
 
-    public int getNumberByPos(int x, int y){
-        Cell cell = grid[x][y];
-        return cell.getNumber();
-    }
-
     public int getNScale(){
         return nScale;
     }
@@ -213,11 +192,11 @@ public class GameBoard {
         return nSerpenti;
     }
 
-    public List<ScalaCell> getScale(){
+    public List<Cell> getScale(){
         return this.scale;
     }
 
-    public List<SerpenteCell> getSerpenti(){
+    public List<Cell> getSerpenti(){
         return this.serpenti;
     }
 }

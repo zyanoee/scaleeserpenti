@@ -13,7 +13,6 @@ import javax.swing.OverlayLayout;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-import config.configmodels.GameBoard;
 import config.configmodels.GameConfig;
 import config.configview.GameBoardView;
 import entities.State;
@@ -23,6 +22,7 @@ import entities.concreteclass.concreteEvents.RerollEvent;
 import entities.concreteclass.concreteEvents.StopEvent;
 import entities.interfaces.Callback;
 import entities.interfaces.Event;
+import entities.interfaces.GameBoardInterface;
 import main.mainmodels.Game;
 import main.mainview.frames.CardPanel;
 import main.mainview.frames.DicePanel;
@@ -39,7 +39,7 @@ public class GameView {
     private EventPanel eventPanel;
     private GameBoardView gbview;
 
-    public GameView(MainframeJFrame mainframe, GameBoard board, GameConfig model, Game game){
+    public GameView(MainframeJFrame mainframe, GameBoardInterface board, GameConfig model, Game game){
         
             this.mainframe = mainframe;
             mainframe.getGameZonePanel().removeAll();

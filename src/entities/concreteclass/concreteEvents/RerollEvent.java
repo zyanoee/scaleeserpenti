@@ -17,7 +17,8 @@ public class RerollEvent implements Event{
         
 
         Callback stopCallback = () -> {
-            g.handleReroll();
+            int newTurn =  g.getTurnPlayerCounter()!=0 ? g.getTurnPlayerCounter()-1 : g.getNumberOfPlayers()-1;
+            g.setTurnPlayerCounter(newTurn);
             callback.onComplete();
         };
         SwingUtilities.invokeLater(() -> {
