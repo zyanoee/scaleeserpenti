@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 
 import config.configmodels.GameConfig;
+import config.configutility.ConfigFileHandler;
 import config.configutility.EditBoardState;
 import config.configutility.GameControllerFactory;
 import config.configutility.states.ScalaState;
@@ -102,7 +103,8 @@ public class EditBoardController {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-            eboard.generateSpecialElements();
+            ConfigFileHandler.saveConfiguration(mainframe, eboard);
+            eboard.setSuccessivi();
             Game game = new Game(gconfig, eboard);
             GameView gw = new GameView(mainframe, eboard, gconfig, game);
             GameControllerFactory gcf = new GameControllerFactory(game, gw, gconfig.isAutomatic());

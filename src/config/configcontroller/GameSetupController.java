@@ -35,6 +35,20 @@ public class GameSetupController {
         view.addLoadButtonListener(new LoadConfigListener());
     }
 
+    public void initializeGameBoardFromFile(GameBoardInterface gboard){
+            int choice = JOptionPane.showConfirmDialog(mainframe,
+            "Vuoi abilitare il gioco automatico?", "Gioco Automatico",
+            JOptionPane.YES_NO_OPTION);
+            model.setAutomatic(choice==JOptionPane.YES_OPTION);
+            Game game = new Game(model, gboard);
+            GameView gw = new GameView(mainframe, gboard, model, game);
+            GameControllerFactory gcf = new GameControllerFactory(game, gw, model.isAutomatic());
+            GameController gc = gcf.create();
+            gc.startListener();
+            view.disposeFrame();
+
+        }
+
     
 
     class StartGameButtonListener implements ActionListener {
@@ -81,7 +95,7 @@ public class GameSetupController {
         }
 
         private void initializeGameBoardView() {
-            ConfigFileHandler.saveConfiguration(mainframe);
+            ConfigFileHandler.saveConfiguration(mainframe, null);
             int choice = JOptionPane.showConfirmDialog(mainframe,
             "Vuoi abilitare il gioco automatico?", "Gioco Automatico",
             JOptionPane.YES_NO_OPTION);
@@ -97,10 +111,7 @@ public class GameSetupController {
  
         }
 
-
-
         private void initializeEditBoardView(){
-            ConfigFileHandler.saveConfiguration(mainframe);
             int choice = JOptionPane.showConfirmDialog(mainframe,
             "Vuoi abilitare il gioco automatico?", "Gioco Automatico",
             JOptionPane.YES_NO_OPTION);
@@ -110,15 +121,19 @@ public class GameSetupController {
             EditBoardController ebcontroller = new EditBoardController(ebview, editBoard, model, mainframe);
             ebcontroller.startListener();
             
-
-
         }
+
+        
     }
 
     class LoadConfigListener implements ActionListener{
          public void actionPerformed(ActionEvent e) {
-            ConfigFileHandler.loadConfiguration(view.getFrame());
+            model = GameConfig.getInstance();
+            GameBoardInterface loadedBoard = ConfigFileHandler.loadConfiguration(view.getFrame());
             updateView();
+            if(loadedBoard!=null){
+                initializeGameBoardFromFile(loadedBoard);
+            }
          }
 
          public void updateView(){

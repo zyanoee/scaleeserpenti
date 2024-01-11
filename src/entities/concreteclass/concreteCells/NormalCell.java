@@ -2,6 +2,7 @@ package entities.concreteclass.concreteCells;
 
 import java.awt.Color;
 
+import entities.SpecialCellType;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
 
@@ -69,6 +70,11 @@ public class NormalCell implements Cell{
 
     public String toString(){
         return "["+getNumber()+"] ";
+    }
+
+    @Override
+    public SpecialCellType getType() {
+        return SpecialCellType.NORMAL;
     }
 
     

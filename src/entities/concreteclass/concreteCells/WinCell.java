@@ -6,9 +6,9 @@ import entities.SpecialCellType;
 import entities.concreteclass.concreteEvents.WinEvent;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
-import entities.interfaces.SpecialCell;
 
-public class WinCell implements SpecialCell{
+
+public class WinCell implements Cell{
 
     private Cell successivo;
     private int number;
@@ -69,7 +69,7 @@ public class WinCell implements SpecialCell{
     }
 
     @Override
-    public SpecialCellType getSpecialCellType() {
+    public SpecialCellType getType() {
         return this.type;
     }
 

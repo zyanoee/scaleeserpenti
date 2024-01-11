@@ -6,9 +6,9 @@ import entities.SpecialCellType;
 import entities.concreteclass.concreteEvents.CardEvent;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
-import entities.interfaces.SpecialCell;
 
-public class CardCell implements SpecialCell {
+
+public class CardCell implements Cell {
 
     private int number;
     private int positionX;
@@ -25,7 +25,7 @@ public class CardCell implements SpecialCell {
     }
 
     @Override
-    public SpecialCellType getSpecialCellType() {
+    public SpecialCellType getType() {
         return type;
     }
 

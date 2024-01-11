@@ -6,9 +6,9 @@ import entities.SpecialCellType;
 import entities.concreteclass.concreteEvents.SerpenteEvent;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
-import entities.interfaces.SpecialCell;
 
-public class SerpenteCell implements SpecialCell {
+
+public class SerpenteCell implements Cell {
 
     private int number;
     private int positionX;
@@ -27,7 +27,7 @@ public class SerpenteCell implements SpecialCell {
     }
 
     @Override
-    public SpecialCellType getSpecialCellType() {
+    public SpecialCellType getType() {
         return type;
     }
 

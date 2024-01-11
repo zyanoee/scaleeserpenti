@@ -6,9 +6,9 @@ import entities.SpecialCellType;
 import entities.concreteclass.concreteEvents.ScalaEvent;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
-import entities.interfaces.SpecialCell;
 
-public class ScalaCell implements SpecialCell {
+
+public class ScalaCell implements Cell {
 
     private int number;
     private int positionX;
@@ -27,7 +27,7 @@ public class ScalaCell implements SpecialCell {
     }
 
     @Override
-    public SpecialCellType getSpecialCellType() {
+    public SpecialCellType getType() {
         return type;
     }
 

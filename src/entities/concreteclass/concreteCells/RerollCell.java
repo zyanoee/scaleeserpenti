@@ -6,9 +6,9 @@ import entities.SpecialCellType;
 import entities.concreteclass.concreteEvents.RerollEvent;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
-import entities.interfaces.SpecialCell;
 
-public class RerollCell implements SpecialCell {
+
+public class RerollCell implements Cell {
 
     private int number;
     private int positionX;
@@ -25,7 +25,7 @@ public class RerollCell implements SpecialCell {
     }
 
     @Override
-    public SpecialCellType getSpecialCellType() {
+    public SpecialCellType getType() {
         return type;
     }
 

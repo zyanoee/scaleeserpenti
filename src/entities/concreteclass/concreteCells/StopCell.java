@@ -6,9 +6,9 @@ import entities.SpecialCellType;
 import entities.concreteclass.concreteEvents.StopEvent;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
-import entities.interfaces.SpecialCell;
 
-public class StopCell implements SpecialCell {
+
+public class StopCell implements Cell {
 
     private int number;
     private int positionX;
@@ -26,7 +26,7 @@ public class StopCell implements SpecialCell {
     }
 
     @Override
-    public SpecialCellType getSpecialCellType() {
+    public SpecialCellType getType() {
         return type;
     }
 

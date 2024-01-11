@@ -7,7 +7,7 @@ import entities.concreteclass.concreteCells.ScalaCell;
 import entities.concreteclass.concreteCells.SerpenteCell;
 import entities.interfaces.Cell;
 import entities.interfaces.GameBoardInterface;
-import entities.interfaces.SpecialCell;
+
 
 
 import java.util.List;
@@ -71,13 +71,12 @@ public class GameBoardView extends JPanel {
                 }
                 Cell cell = grid[x][y];
                 if(cell.isSpecial()){
-                    SpecialCell scell = (SpecialCell) cell;
-                    switch (scell.getSpecialCellType()) {
+                    switch (cell.getType()) {
                         case SERPENTE:
-                            snakes.add(scell);
+                            snakes.add(cell);
                             break;
                         case SCALA:
-                            scale.add(scell);
+                            scale.add(cell);
                             break;
                         default:
                             break;

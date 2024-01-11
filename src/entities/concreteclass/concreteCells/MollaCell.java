@@ -7,9 +7,9 @@ import entities.SpecialCellType;
 import entities.concreteclass.concreteEvents.MollaEvent;
 import entities.interfaces.Cell;
 import entities.interfaces.Event;
-import entities.interfaces.SpecialCell;
 
-public class MollaCell implements SpecialCell {
+
+public class MollaCell implements Cell {
 
     private int number;
     private int positionX;
@@ -26,7 +26,7 @@ public class MollaCell implements SpecialCell {
     }
 
     @Override
-    public SpecialCellType getSpecialCellType() {
+    public SpecialCellType getType() {
         return type;
     }
 

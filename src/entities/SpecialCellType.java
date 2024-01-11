@@ -1,6 +1,7 @@
 package entities;
 
 public enum SpecialCellType {
+    NORMAL,
     SCALA,
     SERPENTE,
     BLOCCO,
