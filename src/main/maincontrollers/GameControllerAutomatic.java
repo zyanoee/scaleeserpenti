@@ -64,7 +64,6 @@ public class GameControllerAutomatic extends GameController {
                 }
             });
             timer.start();
-            timer.setRepeats(true);
         }
 
    }
@@ -88,7 +87,6 @@ public class GameControllerAutomatic extends GameController {
                 }
             });
             timer.start();
-            timer.setRepeats(true);
         }
 
    }

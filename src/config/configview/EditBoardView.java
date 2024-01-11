@@ -29,15 +29,16 @@ public class EditBoardView {
 
     public EditBoardView(EditBoardInterface editBoard){
             this.editBoard = editBoard;
+            int dimX = editBoard.getGridSizeX()*50;
+            int dimY = editBoard.getGridSizeY()*50;
             editFrame = new BoardCustomizerJFrame();
             editFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            editFrame.setSize(800, 600); // Imposta le dimensioni del frame
+            editFrame.setSize(dimX+320, dimY+200); 
             editFrame.setVisible(true);
             gbview = new GameBoardView(this.editBoard);
             hlightpanel = new HighlightOverlayJPanel(this.editBoard);
             editFrame.getEditBoardPanel().setLayout(new OverlayLayout(editFrame.getEditBoardPanel()));
-            int dimX = editBoard.getGridSizeX()*50;
-            int dimY = editBoard.getGridSizeY()*50;
+            
             editFrame.getEditBoardPanel().setPreferredSize(new Dimension(dimX,dimY));
             gbview.setPreferredSize(new Dimension(dimX,dimY));
             hlightpanel.setPreferredSize(new Dimension(dimX, dimY));

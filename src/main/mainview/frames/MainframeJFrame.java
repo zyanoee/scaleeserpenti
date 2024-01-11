@@ -1,5 +1,6 @@
 package main.mainview.frames;
 
+import java.awt.event.WindowEvent;
 
 public class MainframeJFrame extends javax.swing.JFrame {
                 
@@ -174,5 +175,10 @@ public class MainframeJFrame extends javax.swing.JFrame {
 
     public javax.swing.JPanel getEventZonePanel(){
         return this.eventZonePanel;
+    }
+
+    public void close(){
+        WindowEvent windowClosing = new WindowEvent(this, WindowEvent.WINDOW_CLOSING);
+        this.dispatchEvent(windowClosing);
     }
 }

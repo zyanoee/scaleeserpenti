@@ -49,7 +49,11 @@ public class GameView {
             int dimX = board.getGridSizeX()*50;
             int dimY = board.getGridSizeY()*50;
             gbview.setPreferredSize(new Dimension(dimX,dimY));
-            mainframe.setSize(new Dimension(dimX+320, mainframe.getEventZonePanel().getHeight()+400));
+            int biggerDimY = mainframe.getEventZonePanel().getHeight();
+            if(board.getGridSizeY()-10>0){
+                biggerDimY=biggerDimY+(board.getGridSizeY()-10)*50;
+            }
+            mainframe.setSize(new Dimension(dimX+320, biggerDimY+370));
 
             mainframe.getGameZonePanel().setLayout(new OverlayLayout(mainframe.getGameZonePanel()));
             mainframe.getDiceZonePanel().setLayout(new OverlayLayout(mainframe.getDiceZonePanel()));

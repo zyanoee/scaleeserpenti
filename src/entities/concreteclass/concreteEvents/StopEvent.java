@@ -3,6 +3,7 @@ package entities.concreteclass.concreteEvents;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import config.configmodels.GameConfig;
 import entities.interfaces.Callback;
 import entities.interfaces.Event;
 import main.mainmodels.Game;
@@ -27,7 +28,7 @@ public class StopEvent implements Event{
                 boolean playerChoice = showCardChoice(gw);
                 g.handleFugaUsage(g.getPlayer(), playerChoice);
                 if(playerChoice){
-                    gw.printMessage("- Il Giocatore "+g.getTurnPlayerCounter()+" si è dato alla fuga! -");
+                    gw.printMessage("- Il Giocatore "+g.getTurnPlayerCounter()+" si è dato alla fuga usando una Carta Fuga -");
                 }
                 
             }else{g.getPlayer().setBlocked(turns);}
@@ -43,6 +44,9 @@ public class StopEvent implements Event{
 
 
     public boolean showCardChoice(GameView gw) {
+        if(GameConfig.getInstance().isAutomatic()){
+            return true;
+        }
         int scelta = JOptionPane.showConfirmDialog(
                 gw.getMainframe(),
                 "Vuoi utilizzare una tua Carta Fuga?",

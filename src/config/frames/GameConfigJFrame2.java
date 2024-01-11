@@ -1,5 +1,7 @@
 package config.frames;
 
+import java.awt.Dimension;
+
 import javax.swing.InputVerifier;
 import javax.swing.JComponent;
 
@@ -62,6 +64,7 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
         Titlebox = new javax.swing.JPanel();
         Title = new javax.swing.JLabel();
         Subtitle = new javax.swing.JLabel();
+        setResizable(false);
 
 
 
@@ -212,12 +215,13 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
 
 
         loadOptionsButton.setText("Load");
+        loadOptionsButton.setPreferredSize(new Dimension(100, 30));
 
         startGameButton.setText("Start!");
 
         Titlebox.setBackground(new java.awt.Color(255, 153, 153));
 
-        Title.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        Title.setFont(new java.awt.Font("Segoe UI", 1, 24)); 
         Title.setText("SCALE & SERPENTI");
 
         javax.swing.GroupLayout TitleboxLayout = new javax.swing.GroupLayout(Titlebox);
@@ -236,8 +240,6 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
                 .addComponent(Title)
                 .addGap(38, 38, 38))
         );
-
-        Subtitle.setText("Menù di configurazione");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -267,7 +269,7 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(prizeRule)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 58, Short.MAX_VALUE)
-                                .addComponent(loadOptionsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 61, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(loadOptionsButton, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(startGameButton)
                                 .addGap(27, 27, 27))))
@@ -443,6 +445,9 @@ public class GameConfigJFrame2 extends javax.swing.JFrame {
 
     private static int clampValue(int value, int val1, int val2) {
         int minval = Math.max(val1, val2);
+        if(minval>10){
+            minval=20;
+        }
         int lowerLimit = minval / 4;
         int upperLimit = minval / 2;
         return clamp(value, lowerLimit, upperLimit);
