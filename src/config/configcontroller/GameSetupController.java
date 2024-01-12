@@ -53,14 +53,13 @@ public class GameSetupController {
 
     class StartGameButtonListener implements ActionListener {
         public void actionPerformed(ActionEvent e) {
-            // Informazioni dal form
+            
             int numPlayers = view.getNumPlayers();
             int gridSizeX = view.getGridSizeX();
             int gridSizeY = view.getGridSizeY();
             int nScale = view.getNScale();
             int nSerpenti = view.getNSerpenti();
             
-            // Aggiorna il model del Gamecfg
             model = new GameConfigBuilder(numPlayers, gridSizeX, gridSizeY)
                 .nScale(nScale)
                 .nSerpenti(nSerpenti)

@@ -35,11 +35,6 @@ public class Game {
     private int dado1;
     private int dado2;
 
-
-
-
-    
-
     public Game(GameConfig model, GameBoardInterface gboard) {
         this.gboard = gboard;
         gboardSize = gboard.getGridSizeX()*gboard.getGridSizeY() - 1;
