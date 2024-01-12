@@ -73,7 +73,7 @@ public class ConfigFileHandler {
                     ConfigFileHandler.writeConfiguration(fileToSave, gboard);
                     
                 } catch (FileNotFoundException e) {
-                    JOptionPane.showMessageDialog(null, "File non salvato correttamente.", "Errore", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(mainframe, "File non salvato correttamente.", "Errore", JOptionPane.ERROR_MESSAGE);
                 }
             } 
         }
@@ -102,17 +102,18 @@ public class ConfigFileHandler {
             File fileToSave = fileChooser.getSelectedFile();
             String fileName = fileToSave.getName();
             if(!fileName.endsWith(".cfg")){
-               JOptionPane.showMessageDialog(null, "Scegli un file di Configurazione Valido", "Errore", JOptionPane.ERROR_MESSAGE);
+               JOptionPane.showMessageDialog(mainframe, "Scegli un file di Configurazione Valido", "Errore", JOptionPane.ERROR_MESSAGE);
                return null;
             }
             try{
                 ConfigFileHandler.readConfiguration(fileToSave);
                 return ConfigFileHandler.readBoard(fileToSave);
             } catch (FileNotFoundException e){
-                JOptionPane.showMessageDialog(null, "File di Configurazione non valido o corrotto", "Errore", JOptionPane.ERROR_MESSAGE);
-
+                JOptionPane.showMessageDialog(mainframe, "File di Configurazione non valido o corrotto", "Errore", JOptionPane.ERROR_MESSAGE);
             } catch (IOException e){
-                JOptionPane.showMessageDialog(null, "File di Configurazione non valido o corrotto", "Errore", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(mainframe, "File di Configurazione non valido o corrotto", "Errore", JOptionPane.ERROR_MESSAGE);
+            } catch (NumberFormatException n){
+                JOptionPane.showMessageDialog(mainframe, "File di Configurazione non valido o corrotto", "Errore", JOptionPane.ERROR_MESSAGE);
             }
         }
             return null;

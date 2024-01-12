@@ -171,7 +171,7 @@ public class GameConfig {
         writer.println("enableOneDiceEnd="+enableOneDiceEnd);
     }
 
-    public void readConfiguration(BufferedReader reader) throws IOException{
+    public void readConfiguration(BufferedReader reader) throws IOException,NumberFormatException{
         Properties prop = new Properties();
         prop.load(reader);
         this.numberOfPlayers = Integer.parseInt(prop.getProperty("numberOfPlayers"));
