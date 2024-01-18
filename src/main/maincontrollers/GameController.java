@@ -33,7 +33,6 @@ public class GameController {
         this.model = model;
         this.ruler = ruler;
         this.gw = gw;
-        gw.getDiceButton().setEnabled(true);
         if(config.isOneDiceEndEnabled()){
             gw.getDiceEndCheckbox().setVisible(true);
         }
@@ -45,6 +44,7 @@ public class GameController {
 
     public void startListener(){
          gw.removeAllListeners();
+         gw.getDiceButton().setEnabled(true);
          gw.getDiceButton().addActionListener(new DiceRollListener());
          gw.getImageLabel().addMouseListener(new CardClickListener());
          gw.getDiceEndCheckbox().addItemListener(new ItemListener() {
